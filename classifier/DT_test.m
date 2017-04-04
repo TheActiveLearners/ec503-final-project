@@ -12,7 +12,8 @@ function [ confmat ] = DT_test( mdl, X, Y )
 %    confmat - Confusion matrix: num_class by num_class
 %------------- BEGIN CODE --------------
 
-confmat = mdl + length(X) + length(Y);
+Y_hat = predict(mdl,X);
+confmat = confusionmat(Y, Y_hat);
 
 end
 

@@ -1,8 +1,12 @@
-% Authors: Connor Flynn, Dor Rubin, Jenna Warren
+%% Active Learning with Kernel Ridge Regresssion and Decision Trees
+% Authors: 
+    % Connor Flynn
+    % Dor Rubin
+    % Jenna Warren
 % Boston University EC503- Learning From Data
-% Active Learning, Kernel Ridge Regresssion, Decision Trees
 %
 % Last revised: May 3, 2017
+
 
 %% INITIALIZATION
 % Set all the script settings
@@ -23,20 +27,26 @@ models = {
     {'B.data', 'B.label' 25000} % B.data may be unnecessary
     };
 
-% MAKE SELECTION HERE
-selection = 1; % CURRENTLY: ALEX
-model_data  = models{selection}{1}
-model_label  = models{selection}{2}
-training_size  = models{selection}{3}
-
 % QUERY STRATEGIES
 strategies = {'random', 'vote_entropy', 'qbc'};
+
+% MAKE SELECTION HERE
+% Model Selection
+mdl_select = 1; % CURRENTLY: ALEX
+model_data  = models{mdl_select}{1}
+model_label  = models{mdl_select}{2}
+training_size  = models{mdl_select}{3}
+
+% Strategy Selection
+strat_select = 1; % CURRENTLY: RANDOM
+strategy = strategies{strat_select};
+
 
 %% DATA PROCESSING
 % Format the data based on selections above
 
 if ~exist('all_data', 'var')
-    fname = fullfile(data_dir,model_name);
+    fname = fullfile(data_dir,model_data);
     all_data = load(fname);
     fname = fullfile(data_dir,model_label);
     all_labels = load(fname);
@@ -53,30 +63,33 @@ end
 [train_n,train_d] = size(train_X);
 [test_n,test_d] = size(test_X);
 
-% For each query strategy
-for s = strategies
-    % Save selected data points used in training
-    krr_sel_point = zeros(train_n,1);
-    dt_sel_point = zeros(train_n,1);
+% Save selected data points used in training
+krr_sel_point = false(train_n,1);
+dt_sel_point = false(train_n,1);
 
-    % Randomly select the first point to be part of the training set
-    krr_sel_point(1) = 1;
-    dt_sel_point(1) = 1;   
-    
-    % For each remaining training point
-    for j = 2:train_n
-        
-        % Train         
-        krr_mdl = KRR_train(train_X, train_Y, krr_sel_point, s);
-        dt_mdl = DT_train(train_X, train_Y, dt_sel_point, s);
+% Randomly select the first point to be part of the training set
+krr_sel_point(1) = true;
+dt_sel_point(1) = true;
 
-        % Test
-        krr_res = KRR_test(krr_mdl, test_X, test_Y);
-        dt_res = DT_test(dt_mdl, test_X, test_Y);
-        
-    end % END FOR - training loop
+% Log scale for number of points to use in X
+increments = floor(log2(train_n));
+num_samples = 2.^(1:increments);
+num_samples(end + 1) = train_n;
+
+% For each remaining training point
+for j = 2:train_n
     
-end % END FOR - strategy loop
+    % TRAIN
+    % *_sel_point is redefined after each iteration
+    [dt_mdl, dt_sel_point] = DT_train(train_X, train_Y, dt_sel_point, s);
+    % [krr_mdl, krr_sel_point] = KRR_train(train_X, train_Y, krr_sel_point, s);
+    
+    % TEST
+    dt_res_j = DT_test(dt_mdl, test_X, test_Y);
+    % krr_res = KRR_test(krr_mdl, test_X, test_Y);
+    
+end % END FOR - training loop
+
 
 
 

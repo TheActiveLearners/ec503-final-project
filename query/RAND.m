@@ -1,16 +1,17 @@
-function [ x ] = RAND( X, Y )
+function [ sel_idx ] = RAND( sel_idx )
 % Random Selection
 % Takes test data X and returns a single data point
 % 
-% Syntax:  [ x ] = RAND( X )
+% Syntax:  [ x ] = RAND( sel_idx )
 % Inputs:
-%    X - X data: num_samples by num_features
-%    Y - Y labels: num_samples by 1
+%    sel_idx - logical array of selected indicies: num_sample x 1
 %
 % Outputs:
-%    x - data point index: scalar
+%    new_sel_idx - logical array of selected indicies: num_sample x 1
 %------------- BEGIN CODE --------------
 
-
+pool = find(~sel_idx);
+i = randsample(pool,1);
+sel_idx(i) = true;
 end
 

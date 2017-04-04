@@ -1,4 +1,4 @@
-function [ dt_mdl ] = DT_train( X, Y, x_s, s )
+function [ dt_mdl, sel_idx ] = DT_train( X, Y, sel_idx, s )
 % Decision Tree Train
 % Takes current state of model and returns a new one
 % 
@@ -13,17 +13,16 @@ function [ dt_mdl ] = DT_train( X, Y, x_s, s )
 %    dt_mdl - New DT model: struct
 %------------- BEGIN CODE --------------
 
-% Find the zero entry in x_s -> the jth data point selected for training
-new_xj = find(~x_s, 1, 'first');
 
-% Find the zero entry in x_s -> the jth data point selected for training
-xj = find(~x_s, 1, 'first'); % returns index
-x_s(xj) = getNewX(s); % assign new x index value at next available spot
+% Updates the selection vector given the strategy, s
+sel_idx = updateQueryIdx(s, sel_idx);
 
+% Get only those rows from X and Y
+trained_X = X(sel_idx);
+trained_Y = Y(sel_idx);
 
-
-dt_mdl = length(foo);
-
+% Train the model
+dt_mdl = fitctree(trained_X,trained_Y);
 
 end
 
