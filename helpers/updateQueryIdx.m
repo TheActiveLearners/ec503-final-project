@@ -1,4 +1,4 @@
-function [ new_x ] = updateQueryIdx( s, sel_idx )
+function [ new_x ] = updateQueryIdx( s, sel_idx, num_select )
 % getNewX
 % Given a strategy, returns new data point index
 % 
@@ -6,6 +6,7 @@ function [ new_x ] = updateQueryIdx( s, sel_idx )
 % Inputs:
 %    s - query strategy: string
 %    sel_idx - logical array of selected indicies: num_sample x 1
+%    num_select - number of data points to train on X: scalar
 %
 % Outputs:
 %    new_x - data point index: scalar
@@ -13,7 +14,7 @@ function [ new_x ] = updateQueryIdx( s, sel_idx )
 
 switch s
     case 'random'
-        new_x = RAND(sel_idx);
+        new_x = RAND(sel_idx, num_select);
     case 'vote_entropy'
         new_x = VE(X, Y, sel_idx);
     case 'qbc'

@@ -1,4 +1,4 @@
-function [ confmat ] = DT_test( mdl, X, Y )
+function [ ccr ] = DT_test( mdl, X, Y )
 % Decision Tree Test
 % Takes test data X and corresponding labels Y and returns a CCR
 % 
@@ -9,11 +9,13 @@ function [ confmat ] = DT_test( mdl, X, Y )
 %    Y - Y labels: num_samples by 1
 %
 % Outputs:
-%    confmat - Confusion matrix: num_class by num_class
+%    ccr - Correct Classification Rate: scalar
 %------------- BEGIN CODE --------------
+
 
 Y_hat = predict(mdl,X);
 confmat = confusionmat(Y, Y_hat);
+ccr = trace(confmat)/sum(sum(confmat));
 
-end
+end % END FUNCTION
 

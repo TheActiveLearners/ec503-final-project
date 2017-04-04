@@ -39,7 +39,7 @@ training_size  = models{mdl_select}{3}
 
 % Strategy Selection
 strat_select = 1; % CURRENTLY: RANDOM
-strategy = strategies{strat_select};
+s = strategies{strat_select};
 
 
 %% DATA PROCESSING
@@ -76,22 +76,43 @@ increments = floor(log2(train_n));
 num_samples = 2.^(1:increments);
 num_samples(end + 1) = train_n;
 
+% Store results of Decision Tree
+dt_results = zeros(length(num_samples), 1);
+
 % For each remaining training point
-for j = 2:train_n
-    
+for iter_samples = num_samples
+    i = find(iter_samples == num_samples);
     % TRAIN
     % *_sel_point is redefined after each iteration
-    [dt_mdl, dt_sel_point] = DT_train(train_X, train_Y, dt_sel_point, s);
-    % [krr_mdl, krr_sel_point] = KRR_train(train_X, train_Y, krr_sel_point, s);
+    [dt_mdl, dt_sel_point] = DT_train(train_X, train_Y, dt_sel_point, s, iter_samples);
+    % [krr_mdl, krr_sel_point] = KRR_train(train_X, train_Y, krr_sel_point, s, j);
     
-    % TEST
-    dt_res_j = DT_test(dt_mdl, test_X, test_Y);
+    % TEST     
+    dt_results(i) = DT_test(dt_mdl, test_X, test_Y);
     % krr_res = KRR_test(krr_mdl, test_X, test_Y);
     
 end % END FOR - training loop
 
 
 
-
+dt_results
 
 %% PLOT
+ 
+x = num_samples;
+y = dt_results;
+plot(log2(x), y)                               %# plot on log2 x-scale
+
+set(gca, 'XTickLabel',[]);                    %# suppress current x-labels
+xt = get(gca, 'XTick');
+yl = get(gca, 'YLim');
+
+title('Plot of CCR for C values between 2^{-5} to 2^{15}');
+xlabel('C values'); % x-axis label
+xlabh = get(gca,'XLabel');
+% to move x-axis label down
+% set(xlabh,'Position',get(xlabh,'Position') - [0 .1 0]) 
+ylabel('CCR'); % y-axis label
+str = cellstr( num2str(xt(:),'2^{%d}') );
+hTxt = text(xt, yl(ones(size(xt))), str, 'Interpreter','tex', ...
+    'VerticalAlignment','top', 'HorizontalAlignment','center');
