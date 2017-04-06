@@ -1,8 +1,8 @@
 function [ dt_mdl, sel_idx ] = DT_train( X, Y, sel_idx, s , num_select)
 % Decision Tree Train
 % Takes current state of model and returns a new one
-% 
-% Syntax:  [ krr_mdl ] = KRR_train( X, Y, x_s, s)
+%
+% Syntax:  [ dt_mdl ] = DT_train( X, Y, sel_idx, s, num_select)
 % Inputs:
 %    X - X data: num_samples by num_features
 %    Y - Y labels: num_samples by 1

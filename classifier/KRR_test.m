@@ -1,17 +1,17 @@
-function [ confmat ] = KRR_test( mdl, X, Y )
+function [ ccr ] = KRR_test( mdl, X, Y )
 % Kernel Ridge Regression Test
 % Takes test data X and corresponding labels Y and returns a CCR
-% 
-% Syntax:  [ confmat ] = KRR_test( mdl, X, Y )
+%
+% Syntax:  [ ccr ] = KRR_test( mdl, X, Y )
 % Inputs:
-%    mdl - KRR Model: struct
+%    mdl - Decision Tree Model: struct
 %    X - X data: num_samples by num_features
 %    Y - Y labels: num_samples by 1
 %
 % Outputs:
-%    confmat - Confusion matrix: num_class by num_class
+%    ccr - Correct Classification Rate: scalar
 %------------- BEGIN CODE --------------
 
-confmat = mdl + length(X) + length(Y);
+ccr = .5;
 end
 

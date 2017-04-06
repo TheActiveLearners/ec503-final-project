@@ -1,7 +1,7 @@
 function [ new_x ] = updateQueryIdx( s, sel_idx, num_select )
 % getNewX
 % Given a strategy, returns new data point index
-% 
+%
 % Syntax:  [ new_x ] = getNewX( s )
 % Inputs:
 %    s - query strategy: string

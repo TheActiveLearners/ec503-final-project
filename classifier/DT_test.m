@@ -1,7 +1,7 @@
 function [ ccr ] = DT_test( mdl, X, Y )
 % Decision Tree Test
 % Takes test data X and corresponding labels Y and returns a CCR
-% 
+%
 % Syntax:  [ ccr ] = DT_test( mdl, X, Y )
 % Inputs:
 %    mdl - Decision Tree Model: struct
