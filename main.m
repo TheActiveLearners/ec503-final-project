@@ -32,7 +32,7 @@ strategies = {'random', 'vote_entropy', 'qbc'};
 
 % MAKE SELECTION HERE
 % Model Selection
-mdl_select = 1; % CURRENTLY: ALEX
+mdl_select = 2; % CURRENTLY: ALEX
 model_data  = models{mdl_select}{1}
 model_label  = models{mdl_select}{2}
 training_size  = models{mdl_select}{3}
@@ -69,7 +69,7 @@ dt_sel_point = false(train_n,1);
 
 % Log scale for number of points to use in X
 increments = floor(log2(train_n));
-num_samples = 2.^(0:increments); % 1,2,4,8...4096,500
+num_samples = 2.^(0:increments); % 1,2,4,8...4096,5000
 num_samples(end + 1) = train_n;
 
 % Store results of Classifier
@@ -82,11 +82,11 @@ for iter_samples = num_samples
     % TRAIN
     % *_sel_point is redefined after each iteration
     [dt_mdl, dt_sel_point] = DT_train(train_X, train_Y, dt_sel_point, s, iter_samples);
-    % [krr_mdl, krr_sel_point] = KRR_train(train_X, train_Y, krr_sel_point, s, iter_samples);
+    [krr_mdl, krr_sel_point] = KRR_train(train_X, train_Y, krr_sel_point, s, iter_samples);
     
     % TEST
     dt_results(i)  = DT_test(dt_mdl, test_X, test_Y);
-    % krr_results(i) = KRR_test(krr_mdl, test_X, test_Y);
+    krr_results(i) = KRR_test(krr_mdl, test_X, test_Y);
     
 end % END FOR - training loop
 
@@ -95,7 +95,7 @@ end % END FOR - training loop
 close all;
 x = num_samples;
 y = horzcat(dt_results, krr_results);
-legend = {'dt_{rand}', 'krr_{rand}'}
+legend = {'dt_{rand}', 'krr_{rand}'};
 logScalePlot(x,'Training Size',...
              y,'CCR',...
              legend,...
