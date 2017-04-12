@@ -94,25 +94,10 @@ end % END FOR - training loop
 %% PLOT
 close all;
 x = num_samples;
-y1 = dt_results;
-y2 = krr_results;
-plot(log2(x), y1, log2(x), y2 ) % plot on log2 x-scale
+y = horzcat(dt_results, krr_results);
+legend = {'dt_{rand}', 'krr_{rand}'}
+logScalePlot(x,'Training Size',...
+             y,'CCR',...
+             legend,...
+             'Plot of CCR for training size between 2^{-5} to 2^{15}');
 
-set(gca, 'XTickLabel',[]); % suppress current x-labels
-xt = get(gca, 'XTick');
-yl = get(gca, 'YLim');
-
-% TITLE
-title('Plot of CCR for training size between 2^{-5} to 2^{15}');
-% LEGEND
-legend('dt_{rand}', 'krr_{rand}', 'location', 'southeast');
-% Y-AXIS LABEL
-ylabel('CCR');
-% X-AXIS LABEL
-xlabel('Training Size'); % x-axis label
-xlabh = get(gca,'XLabel');
-% to move x-axis label down
-set(xlabh,'Position',get(xlabh,'Position') - [0 .025 0])
-str = cellstr( num2str(xt(:),'2^{%d}') ); % replace with 2^d
-hTxt = text(xt, yl(ones(size(xt))), str, 'Interpreter','tex', ...
-    'VerticalAlignment','top', 'HorizontalAlignment','center');
