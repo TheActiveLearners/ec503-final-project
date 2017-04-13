@@ -19,7 +19,7 @@ function [ dt_results, krr_results ] = trainAndTest(strategy, num_samples, train
 %------------- BEGIN CODE --------------
 
 tmax = 1;
-if strategy == 'random'
+if strcmp('random', strategy)
     tmax = 10;
 end
 
@@ -36,15 +36,18 @@ for t = 1:tmax
     t
     
     % Save selected data points used in training
-    krr_sel_point = false(train_n,1);
-    dt_sel_point = false(train_n,1);
+    sel_idx = false(train_n,1);
     
     for iter_samples = num_samples
         i = find(iter_samples == num_samples);
+        
+        % Updates the selection vector given the strategy, s
+        sel_idx = updateQueryIdx(strategy, sel_idx, iter_samples, train_X, train_Y);
+        
         % TRAIN
         % *_sel_point is redefined after each iteration
-        [dt_mdl, dt_sel_point] = DT_train(train_X, train_Y, dt_sel_point, strategy, iter_samples);
-        [krr_mdl, krr_sel_point] = KRR_train(train_X, train_Y, krr_sel_point, strategy, iter_samples);
+        dt_mdl  = DT_train(train_X, train_Y, sel_idx);
+        krr_mdl = KRR_train(train_X, train_Y, sel_idx);
         
         % TEST
         dt_temp_results(t,i)  = DT_test(dt_mdl, test_X, test_Y);

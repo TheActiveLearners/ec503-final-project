@@ -1,4 +1,4 @@
-function [ dt_mdl, sel_idx ] = DT_train( X, Y, sel_idx, s , num_select)
+function [ dt_mdl ] = DT_train( X, Y, sel_idx)
 % Decision Tree Train
 % Takes current state of model and returns a new one
 %
@@ -6,17 +6,12 @@ function [ dt_mdl, sel_idx ] = DT_train( X, Y, sel_idx, s , num_select)
 % Inputs:
 %    X - X data: num_samples by num_features
 %    Y - Y labels: num_samples by 1
-%    x_s - selected training points: train_n by 1
-%    s - query strategy: string
-%    num_select - number of data points to train on X: scalar
+%    sel_idx - selected training points: train_n by 1
 %
 % Outputs:
 %    dt_mdl - New DT model: struct
 %------------- BEGIN CODE --------------
 
-
-% Updates the selection vector given the strategy, s
-sel_idx = updateQueryIdx(s, sel_idx, num_select);
 
 % Get only those rows from X and Y
 trained_X = X(sel_idx,:);

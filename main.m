@@ -33,11 +33,11 @@ model_label  = models{select_mdl}{2};
 training_size  = models{select_mdl}{3};
 
 % QUERY STRATEGIES
-strategies = {'random', 'vote_entropy', 'qbc'};
+strategies = {'random', 'vote_entropy', 'qbc', 'uc'};
 
 
 % Strategy Selection
-select_strat = input('Which strategy (1) Random (2) Vote (3) QBC ?  ');
+select_strat = input('Which strategy (1) Random (2) Vote (3) QBC (4) Uncertainty Sampling  ?  ');
 strategy = strategies{select_strat}
 
 
