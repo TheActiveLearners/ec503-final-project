@@ -32,14 +32,13 @@ end
     krr_temp_results = zeros(tmax, length(num_samples));
 
 for t = 1:tmax
-    % Print tmax to console
-    t
     
     % Save selected data points used in training
     sel_idx = false(train_n,1);
     
     for iter_samples = num_samples
         i = find(iter_samples == num_samples);
+        iter_samples
         
         % Updates the selection vector given the strategy, s
         sel_idx = updateQueryIdx(strategy, sel_idx, iter_samples, train_X, train_Y);
@@ -58,8 +57,15 @@ for t = 1:tmax
 end % END FOR - repetition loops
 
 % Return results for each Classifier
-dt_results = mean(dt_temp_results);
-krr_results = mean(krr_temp_results);
+if tmax > 1
+    dt_results = mean(dt_temp_results);
+    krr_results = mean(krr_temp_results);
+else
+    dt_results = dt_temp_results;
+    krr_results = krr_temp_results;
+end
+
+
 
 end % END FUNCTION
 
