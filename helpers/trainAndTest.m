@@ -18,27 +18,25 @@ function [ dt_results, krr_results ] = trainAndTest(strategy, num_samples, train
 %    krr_result - CCR for each num training samples: tmax x num_samples
 %------------- BEGIN CODE --------------
 
-tmax = 1;
-if strcmp('random', strategy)
-    tmax = 10;
-end
+% Set the max number of trials
+trials = 10;
 
 % Data set sizes - n: samples, d: features
 [train_n,~] = size(train_X);
-% [~,~] = size(test_X);
 
-% Initialize temporary array to hold results     
-    dt_temp_results = zeros(tmax, length(num_samples));
-    krr_temp_results = zeros(tmax, length(num_samples));
+% Initialize temporary array to hold results
+dt_temp_results = zeros(trials, length(num_samples));
+krr_temp_results = zeros(trials, length(num_samples));
 
-for t = 1:tmax
-    
-    % Save selected data points used in training
+% For each trial
+for t = 1:trials
+    t
+    % Reset all the selected indicies to false
     sel_idx = false(train_n,1);
     
+    % iter_samples is the max number of training points
     for iter_samples = num_samples
         i = find(iter_samples == num_samples);
-        iter_samples
         
         % Updates the selection vector given the strategy, s
         sel_idx = updateQueryIdx(strategy, sel_idx, iter_samples, train_X, train_Y);
@@ -53,17 +51,14 @@ for t = 1:tmax
         krr_temp_results(t,i) = KRR_test(krr_mdl, test_X, test_Y);
         
     end % END FOR - training loop
-
+    
 end % END FOR - repetition loops
 
 % Return results for each Classifier
-if tmax > 1
-    dt_results = mean(dt_temp_results);
-    krr_results = mean(krr_temp_results);
-else
-    dt_results = dt_temp_results;
-    krr_results = krr_temp_results;
-end
+
+dt_results = mean(dt_temp_results);
+krr_results = mean(krr_temp_results);
+
 
 
 

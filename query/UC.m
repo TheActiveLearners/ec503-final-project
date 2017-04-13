@@ -29,8 +29,15 @@ compact_mdl = compact(mdl);
     untrained_X, untrained_Y);
 [~,post_dist] = predict(score_mdl,untrained_X);
 % 1st column - positive class posterior probabilities
+[cl_1_min,min_indicies_1] = sort(post_dist(:,2));
 % 2nd column - negative class posterior probabilities
-[~,min_indicies] = sort(post_dist(:,2));
+[cl_2_min,min_indicies_2] = sort(post_dist(:,2));
+
+if cl_1_min > cl_2_min
+    min_indicies = min_indicies_1;
+else
+    min_indicies = min_indicies_2;
+end
 
 % Find difference to account for aggregate selections
 num_selected = numel(find(sel_idx));
