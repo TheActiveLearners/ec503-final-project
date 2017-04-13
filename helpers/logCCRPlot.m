@@ -1,4 +1,4 @@
-function [ ] = logScalePlot( x, x_label, y, y_label, in_legend, in_title )
+function [ ] = logCCRPlot( x, x_label, y, y_label, in_legend, in_title )
 % logScalePlot
 % Plots
 %
@@ -18,7 +18,6 @@ function [ ] = logScalePlot( x, x_label, y, y_label, in_legend, in_title )
 % Outputs:
 %    N/A
 %------------- BEGIN CODE --------------
-close all;
 figure
 hold on;
 grid on;
