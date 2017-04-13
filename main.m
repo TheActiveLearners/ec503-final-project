@@ -12,43 +12,42 @@
 % Set all the script settings
 clear; close all; clc;
 rng('default');
-my_root     = '.'; % Change this to the directory where you put your code and data
-data_dir    = [my_root '/data'];
-results_dir = [my_root '/results'];
-classifier_dir    = [my_root '/classifier'];
-query_dir    = [my_root '/query'];
-helper_dir    = [my_root '/helpers'];
-addpath(data_dir, results_dir, classifier_dir, query_dir, helper_dir);
+dir_data       = './data';
+dir_results    = './results';
+dir_classifier = './classifier';
+dir_query      = './query';
+dir_helper     = './helpers';
+addpath(dir_data, dir_results, dir_classifier, dir_query, dir_helper);
 
 % MODELS
 models = {
     {'alex.data', 'alex.label', 5000},...
-    {'ibn_sina.data','ibn_sina.label', 10361},...
-    {'B.data', 'B.label' 25000} % B.data may be unnecessary
+    {'ibn_sina.data','ibn_sina.label', 10361}
     };
+
+% MAKE SELECTION HERE
+% Model Selection
+select_mdl = input('Which dataset (1) ALEX (2)IBN_SINA ?  ');
+model_data  = models{select_mdl}{1}
+model_label  = models{select_mdl}{2};
+training_size  = models{select_mdl}{3};
 
 % QUERY STRATEGIES
 strategies = {'random', 'vote_entropy', 'qbc'};
 
-% MAKE SELECTION HERE
-% Model Selection
-mdl_select = 2; % CURRENTLY: ALEX
-model_data  = models{mdl_select}{1}
-model_label  = models{mdl_select}{2}
-training_size  = models{mdl_select}{3}
 
 % Strategy Selection
-strat_select = 1; % CURRENTLY: RANDOM
-strategy = strategies{strat_select};
+select_strat = input('Which strategy (1) Random (2) Vote (3) QBC ?  ');
+strategy = strategies{select_strat}
 
 
 %% DATA PROCESSING
 % Format the data based on selections above
 
 if ~exist('all_data', 'var')
-    fname = fullfile(data_dir,model_data);
+    fname = fullfile(dir_data,model_data);
     all_data = load(fname);
-    fname = fullfile(data_dir,model_label);
+    fname = fullfile(dir_data,model_label);
     all_labels = load(fname);
     train_X = all_data(1:training_size,:);
     test_X  = all_data(training_size+1:end,:);
@@ -66,20 +65,21 @@ end
 
 % Log scale for number of points to use in X
 increments = floor(log2(train_n));
-num_samples = 2.^(0:increments); % 1,2,4,8...4096,5000
+num_samples = 2.^(0:increments); % 1,2,4,8...4096,train_n
 num_samples(end + 1) = train_n;
 
 
 % For each remaining training point
-[ dt_results, krr_results ] = trainAndTest(strategy, num_samples, train_X, train_Y, test_X, test_Y);
+[ dt_results, krr_results ] =...
+    trainAndTest(strategy, num_samples,train_X, train_Y,test_X, test_Y);
 
 
 %% PLOT
 close all;
 x = num_samples;
-y = horzcat(dt_results, krr_results);
+y = horzcat(dt_results', krr_results');
 legend = {strcat('dt_{',strategy,'}'), strcat('krr_{',strategy,'}')};
 logScalePlot(x,'Training Size',...
     y,'CCR',...
     legend,...
-    'Plot of CCR for training size between 2^{-5} to 2^{15}');
+    'Plot of CCR for training size between 1 to max training size');
