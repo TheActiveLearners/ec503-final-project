@@ -16,37 +16,28 @@ function [ sel_idx ] = UC(X, Y, sel_idx, num_to_select)
 trained_X = X(sel_idx,:);
 trained_Y = Y(sel_idx,:);
 untrained_X = X(~sel_idx,:);
-untrained_Y = Y(~sel_idx);
+% untrained_Y = Y(~sel_idx); % Should not be using untrained_Y
 
 
 % Train a SVM on only trained data
 % Alex - Adding KernelScale 'auto' and KernelFunction 'RBF' improved performance
 % IBN - Adding KernelScale 'auto' and KernelFunction 'RBF' improved performance
-mdl = fitcsvm(trained_X,trained_Y,...
+svm_mdl = fitcsvm(trained_X,trained_Y,...
                   'ClassNames',unique(Y),...
                   'KernelFunction','RBF',...
                   'Standardize',true);
-% USING DISTANCE              
-[~,d] = dsearchn(mdl.SupportVectors,untrained_X);
-[min_dist, min_indicies] = sort(d);
 
-% USING POSTERIOR
-% compact_mdl = compact(mdl);
-% % Get Posterior distribution for each untrained X
-% [score_mdl,~] = fitPosterior(compact_mdl,...
-%     untrained_X, untrained_Y);
-% [~,post_dist] = predict(score_mdl,untrained_X);
-% % 1st column - positive class posterior probabilities
-% [cl_1_min,min_indicies_1] = sort(post_dist(:,2));
-% % 2nd column - negative class posterior probabilities
-% [cl_2_min,min_indicies_2] = sort(post_dist(:,2));
-% 
-% if cl_1_min > cl_2_min
-%     min_indicies = min_indicies_1;
-% else
-%     min_indicies = min_indicies_2;
-% end
+% USING DISTANCE - PERFORMS BEST WITH ALEX AND IBN_SINA
+[~,d_1] = dsearchn(svm_mdl.SupportVectors,untrained_X);
+% finding points farther away works better with ALEX
+[~, all_indicies_1] = sort(d_1, 'descend'); 
 
+% USING KNN -- SAME AS dsearchn
+% [~,d_2] = knnsearch(svm_mdl.SupportVectors,untrained_X);
+% [~, all_indicies_2] = sort(d_2);
+
+
+min_indicies = all_indicies_1;
 % Find difference to account for aggregate selections
 num_selected = numel(find(sel_idx));
 % Get k smallest posteriors

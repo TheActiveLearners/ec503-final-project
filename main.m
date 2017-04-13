@@ -26,7 +26,8 @@ models = {
 
 % MAKE SELECTION HERE
 % Model Selection
-select_mdl = input('Which dataset (1) ALEX (2) IBN_SINA ?  ');
+% select_mdl = input('Which dataset (1) ALEX (2) IBN_SINA ?  ');
+select_mdl = 1;
 model_name = models{select_mdl}{1}
 model_data  = models{select_mdl}{2};
 model_label  = models{select_mdl}{3};
@@ -51,7 +52,8 @@ strategies = {'vote_entropy', 'qbc', 'uc', 'random'};
 
 
 % Strategy Selection
-select_strat = input('Which strategy (1) Vote (2) QBC (3) Uncertainty Sampling (4) Random ?  ');
+% select_strat = input('Which strategy (1) Vote (2) QBC (3) Uncertainty Sampling (4) Random ?  ');
+select_strat = 3;
 strategy = strategies{select_strat}
 
 
