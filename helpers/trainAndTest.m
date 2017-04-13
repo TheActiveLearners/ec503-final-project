@@ -18,8 +18,8 @@ function [ dt_results, krr_results ] = trainAndTest(strategy, num_samples, train
 %    krr_result - CCR for each num training samples: tmax x num_samples
 %------------- BEGIN CODE --------------
 
-% Set the max number of trials
-trials = 10;
+% Set the max number of trials -- must be greater than 1
+trials = 2;
 
 % Data set sizes - n: samples, d: features
 [train_n,~] = size(train_X);

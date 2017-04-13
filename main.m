@@ -5,8 +5,7 @@
 % Jenna Warren
 % Boston University EC503- Learning From Data
 %
-% Last revised: May 3, 2017
-
+% Last revised: May 3, 2017 
 
 %% INITIALIZATION
 % Set all the script settings
@@ -33,13 +32,19 @@ model_data  = models{select_mdl}{2};
 model_label  = models{select_mdl}{3};
 training_size  = models{select_mdl}{4};
 
+% TODO - refactor this and move random data to ./results 
 % Load Random query data
-% addpath(strcat('./results/', model_name));
-% files = dir(strcat('./results/', model_name, '/*.mat'));
-% for i=1:length(files)
-%     eval(['load ' files(i).name]);
-% end
-
+if select_mdl == 1
+    dt_results_random = load('dt_results_random_alex_100');
+    dt_results_random = dt_results_random.dt_results_strat;
+    krr_results_random = load('krr_results_random_alex_100');
+    krr_results_random = krr_results_random.krr_results_strat;
+else
+    dt_results_random = load('dt_results_random_ibn_100');
+    dt_results_random = dt_results_random.dt_results_strat;
+    krr_results_random = load('krr_results_random_ibn_100');
+    krr_results_random = krr_results_random.krr_results_strat;
+end
 
 % QUERY STRATEGIES
 strategies = {'vote_entropy', 'qbc', 'uc', 'random'};
@@ -53,16 +58,15 @@ strategy = strategies{select_strat}
 %% DATA PROCESSING
 % Format the data based on selections above
 
-if ~exist('all_data', 'var')
-    fname = fullfile(dir_data,model_data);
-    all_data = load(fname);
-    fname = fullfile(dir_data,model_label);
-    all_labels = load(fname);
-    train_X = all_data(1:training_size,:);
-    test_X  = all_data(training_size+1:end,:);
-    train_Y = all_labels(1:training_size,:);
-    test_Y  = all_labels(training_size+1:end,:);
-end
+fname = fullfile(dir_data,model_data);
+all_data = load(fname);
+fname = fullfile(dir_data,model_label);
+all_labels = load(fname);
+train_X = all_data(1:training_size,:);
+test_X  = all_data(training_size+1:end,:);
+train_Y = all_labels(1:training_size,:);
+test_Y  = all_labels(training_size+1:end,:);
+
 
 %% TRAIN and TEST
 % Perform incremental tests on the data
