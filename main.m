@@ -27,7 +27,7 @@ models = {
 % MAKE SELECTION HERE
 % Model Selection
 % select_mdl = input('Which dataset (1) ALEX (2) IBN_SINA ?  ');
-select_mdl = 1;
+select_mdl = 2;
 model_name = models{select_mdl}{1}
 model_data  = models{select_mdl}{2};
 model_label  = models{select_mdl}{3};
@@ -38,23 +38,12 @@ scales = {'log', 'linear'};
 
 % Scale Selection
 % select_strat = input('Which scale (1) log (2) linear ?  ');
-select_scale = 2;
+select_scale = 1;
 scale = scales{select_scale}
 
-% TODO - refactor this and move random data to ./results
 % Load Random query data
-% [dt_results_random, krr_results_random] = loadRandomData(model_name, scale);
-if select_mdl == 1
-    dt_results_random = load('dt_results_log_all_random_alex_100');
-    dt_results_random = dt_results_random.dt_results_strat;
-    krr_results_random = load('krr_results_log_all_random_alex_100');
-    krr_results_random = krr_results_random.krr_results_strat;
-else
-    dt_results_random = load('dt_results_log_all_random_ibn_100');
-    dt_results_random = dt_results_random.dt_results_strat;
-    krr_results_random = load('krr_results_log_all_random_ibn_100');
-    krr_results_random = krr_results_random.krr_results_strat;
-end
+[dt_results_random, krr_results_random] = loadRandomData(select_mdl, scale);
+
 
 % QUERY STRATEGIES
 strategies = {'vote_entropy', 'qbc', 'uc', 'random'};
@@ -87,33 +76,26 @@ test_Y  = all_labels(training_size+1:end,:);
 [test_n,test_d] = size(test_X);
 
 % Set the Scale for the tests
-seed = 1;
+seed = 4;
 increment = 2;
-max_sample = 64;
+max_sample = 100;
 num_samples = setScale(scale, train_n, seed, increment, max_sample);
 
-% If not log
-if ~strcmp(strategy, 'log')
-    [ dt_results_random, krr_results_random ] =...
-        trainAndTest(strategy, num_samples,train_X, train_Y,test_X, test_Y);
-end
 
-
-% For each remaining training point
 [ dt_results_strat, krr_results_strat ] =...
     trainAndTest(strategy, num_samples,train_X, train_Y,test_X, test_Y);
 
 
 %% PLOT
 x = num_samples;
-y = horzcat(dt_results_random', krr_results_random',...
+y = horzcat(dt_results_random(2:end)', krr_results_random(2:end)',...
     dt_results_strat', krr_results_strat');
 
 
 legend = {'dt_{random}', 'krr_{random}',...
     strcat('dt_{',strategy,'}'), strcat('krr_{',strategy,'}')};
 
-if strcmp(strategy, 'log')
+if strcmp(scale, 'log')
     logCCRPlot(x,'Training Size',...
         y,'CCR',...
         legend,...

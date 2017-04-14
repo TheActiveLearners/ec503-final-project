@@ -16,7 +16,7 @@ switch scale
     case 'log'
         % Log scale for number of points to use in X
         steps = floor(log2(train_n));
-        num_samples = 2.^(0:steps); % 1,2,4,8...4096,train_n
+        num_samples = 2.^(1:steps); % 1,2,4,8...4096,train_n
         num_samples(end + 1) = train_n;
     case 'linear'
         num_samples = (seed:inc:max_sample); % seed,seed+inc*1,seed+inc*2...,train_n
