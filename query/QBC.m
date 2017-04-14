@@ -32,6 +32,22 @@ mdl = fitcsvm(trained_X,trained_Y,...
 [all_dist_1, all_indicies_1] = sort(d);
 
 
+% Find the points that are furthest away from regression line
+% lambda = exp(3); 
+% scaled = 0;
+% W = ridge(trained_Y,trained_X, 0, 1);
+% b = W(1);
+% w = W(2:end);
+% r = untrained_X * W;
+% [all_dist_1, all_indicies_1] = sort(abs(r), 'ascend'); 
+
+
+% USING DISTANCE - PERFORMS BEST WITH ALEX AND IBN_SINA
+% [~,d_1] = dsearchn(svm_mdl.SupportVectors,untrained_X);
+% finding points farther away works better with ALEX
+% [all_dist_2, all_indicies_2] = sort(d_1, 'ascend'); 
+
+
 
 % USING POSTERIOR
 % compact_mdl = compact(mdl);

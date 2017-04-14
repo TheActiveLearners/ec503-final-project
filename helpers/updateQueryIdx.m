@@ -13,9 +13,9 @@ function [ new_x ] = updateQueryIdx( strategy, sel_idx, num_select, X, Y )
 % Outputs:
 %    new_x - data point index: scalar
 %------------- BEGIN CODE --------------
-
+[train_n, ~] = size(X);
 % verify that at least one sample given in training
-if any(sel_idx)
+if any(sel_idx) && num_select ~= train_n
     % call query strategy
     switch strategy
         case 'uc'

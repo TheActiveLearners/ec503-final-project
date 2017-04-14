@@ -19,48 +19,52 @@ untrained_X = X(~sel_idx,:);
 % untrained_Y = Y(~sel_idx); % Should not be using untrained_Y
 
 
+% METHOD 1 - USE K NEAREST
+% [~,d] = dsearchn(svm_mdl.SupportVectors,untrained_X);
+% [all_dist_1, all_indicies_1] = sort(d, 'descend');
+
+% METHOD 2 - POSTERIOR 
 % Train a SVM on only trained data
 % Alex - Adding KernelScale 'auto' and KernelFunction 'RBF' improved performance
 % IBN - Adding KernelScale 'auto' and KernelFunction 'RBF' improved performance
-svm_mdl = fitcsvm(trained_X,trained_Y,...
-                  'ClassNames',unique(Y),...
-                  'Standardize',true,...
-                  'OutlierFraction',0.05);
-
-% compact_mdl = compact(svm_mdl);
+% svm_mdl = fitcsvm(trained_X,trained_Y,...
+%                   'ClassNames',unique(Y),...
+%                   'Standardize',true,...
+%                   'OutlierFraction',0.05);
+% 
+% 
 % Get Posterior distribution for each untrained X
-[score_mdl,foo] = fitSVMPosterior(svm_mdl);
-[bar,post_dist] = predict(score_mdl,untrained_X);
-% 1st column - positive class posterior probabilities
-cl_1_post = post_dist(:,1);
-cl_1_uncertain = abs(0.5 - cl_1_post);
-[all_dist_2, all_indicies_2] = sort(cl_1_uncertain, 'descend');
-              
-              
-% Find the points that are furthest away from regression line
-% lambda = exp(3); 
-% scaled = 0;
-% W = ridge(trained_Y,trained_X, 0, 1);
-% b = W(1);
-% w = W(2:end);
-% r = untrained_X * W;
-% [all_dist_1, all_indicies_1] = sort(abs(r), 'ascend'); 
+% [score_mdl,unselected_indicies] = fitSVMPosterior(svm_mdl);
+% [i_select,post_dist] = predict(score_mdl,untrained_X);
+% % 1st column - positive class posterior probabilities
+% cl_1_post = post_dist(:,1);
+% cl_1_uncertain = abs(0.5 - cl_1_post);
+% [all_dist_2, all_indicies_2] = sort(cl_1_uncertain, 'ascend');
+ 
+
+% METHOD 3 - USING MOST DEVIATED
+k = exp(4);
+scaled = 0;
+W = ridge(trained_Y, trained_X, k, scaled);
+b = W(1);
+w = W(2:end);
+
+y_hat = untrained_X * w + b;
+[all_dist_3,all_indicies_3] = sort(abs(y_hat), 'descend'); 
+
+[~,d] = dsearchn(w',untrained_X);
+[all_dist_1, all_indicies_1] = sort(d, 'ascend');
 
 
-% USING DISTANCE - PERFORMS BEST WITH ALEX AND IBN_SINA
-% [~,d_1] = dsearchn(svm_mdl.SupportVectors,untrained_X);
-% finding points farther away works better with ALEX
-% [all_dist_2, all_indicies_2] = sort(d_1, 'ascend'); 
-
-
-
-min_indicies = all_indicies_2;
+min_indicies = all_indicies_1;
 % min_indicies_2 = all_indicies_2;
 % Find difference to account for aggregate selections
-num_selected = numel(find(sel_idx));
+num_selected = sum(sel_idx);
 % Get k smallest posteriors
 k = num_to_select - num_selected;
-i_s = min_indicies(1:k);
-sel_idx(i_s) = true;
+i_from_untrained = min_indicies(1:k);
+unselected_indicies = find(~sel_idx);
+i_select = unselected_indicies(i_from_untrained);
+sel_idx(i_select) = true;
 end
 

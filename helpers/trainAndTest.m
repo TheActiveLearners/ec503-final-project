@@ -1,4 +1,4 @@
-function [ dt_results, krr_results ] = trainAndTest(strategy, num_samples, train_X, train_Y, test_X, test_Y)
+function [ dt_results, krr_results ] = trainAndTest(strategy, num_samples, train_X, train_Y, test_X, test_Y, select_mdl, scale)
 % trainAndTest
 % Runs train and test depending on the strategy
 %
@@ -19,7 +19,7 @@ function [ dt_results, krr_results ] = trainAndTest(strategy, num_samples, train
 %------------- BEGIN CODE --------------
 
 % Set the max number of trials -- must be greater than 1
-trials = 1;
+trials = 10;
 
 % Data set sizes - n: samples, d: features
 [train_n,~] = size(train_X);
@@ -36,7 +36,6 @@ for t = 1:trials
     
     % iter_samples is the max number of training points
     for iter_samples = num_samples
-        
         i = find(iter_samples == num_samples);
         % Updates the selection vector given the strategy, s
         sel_idx = updateQueryIdx(strategy, sel_idx, iter_samples, train_X, train_Y);
@@ -55,6 +54,12 @@ for t = 1:trials
 end % END FOR - repetition loops
 
 % Return results for each Classifier
+
+% dt_temp_results = load('dt_temp_results.mat');
+% dt_temp_results = dt_temp_results.dt_temp_results;
+% krr_temp_results = load('krr_temp_results.mat');
+% krr_temp_results = krr_temp_results.krr_temp_results;
+
 if trials > 1
     dt_results = mean(dt_temp_results);
     krr_results = mean(krr_temp_results);

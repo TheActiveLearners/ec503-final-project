@@ -27,7 +27,7 @@ models = {
 % MAKE SELECTION HERE
 % Model Selection
 % select_mdl = input('Which dataset (1) ALEX (2) IBN_SINA ?  ');
-select_mdl = 2;
+select_mdl = 1;
 model_name = models{select_mdl}{1}
 model_data  = models{select_mdl}{2};
 model_label  = models{select_mdl}{3};
@@ -83,7 +83,7 @@ num_samples = setScale(scale, train_n, seed, increment, max_sample);
 
 
 [ dt_results_strat, krr_results_strat ] =...
-    trainAndTest(strategy, num_samples,train_X, train_Y,test_X, test_Y);
+    trainAndTest(strategy, num_samples,train_X, train_Y,test_X, test_Y, select_mdl, scale);
 
 
 %% PLOT
