@@ -42,16 +42,13 @@ scales = {'log', 'linear'};
 select_scale = 1;
 scale = scales{select_scale}
 
-% Load Random query data
-% [dt_results_random, krr_results_random] = loadRandomData(select_mdl, scale);
-
 
 % QUERY STRATEGIES
 strategies = {'vote_entropy', 'qbc', 'uc', 'random'};
 
 % Strategy Selection
 % select_strat = input('Which strategy (1) Vote (2) QBC (3) Uncertainty Sampling (4) Random ?  ');
-select_strat = 3;
+select_strat = 4;
 strategy = strategies{select_strat}
 
 
@@ -91,8 +88,11 @@ increment = 2;
 max_sample = 100;
 num_samples = setScale(scale, train_n, seed, increment, max_sample);
 
-[ dt_results_random, krr_results_random ] =...
-    trainAndTest('random', num_samples,train_X, train_Y,test_X, test_Y, select_mdl, scale);
+% Load Random query data
+[dt_results_random, krr_results_random] = loadRandomData(select_mdl, scale, seed);
+
+% [ dt_results_random, krr_results_random ] =...
+%     trainAndTest('random', num_samples,train_X, train_Y,test_X, test_Y, select_mdl, scale);
 
 [ dt_results_strat, krr_results_strat ] =...
     trainAndTest(strategy, num_samples,train_X, train_Y,test_X, test_Y, select_mdl, scale);
@@ -113,10 +113,10 @@ if strcmp(scale, 'log')
         legend,...
         'Plot of CCR for training size between 1 to max training size');
     
-%     logAUCPlot(x,'Training Size',...
-%         y,'AUC',...
-%         legend,...
-%         'Plot of AUC for training size between 1 to max training size');
+    logAUCPlot(x,'Training Size',...
+        y,'AUC',...
+        legend,...
+        'Plot of AUC for training size between 1 to max training size');
 else
     linearCCRPlot(x,'Training Size',...
         y,'CCR',...
