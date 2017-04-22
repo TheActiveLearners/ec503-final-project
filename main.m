@@ -20,9 +20,9 @@ addpath(dir_data, dir_results, dir_classifier, dir_query, dir_helper);
 
 % MODELS
 models = {
-    {'alex', 'alex.data', 'alex.label', 5000},...
-    {'ibn_sina', 'ibn_sina.data','ibn_sina.label', 10361},...
-    {'spambase', 'spambase.data','spambase.label', floor(4601/2)}
+    {'alex', 'alex.data', 'alex.label'},...
+    {'ibn_sina', 'ibn_sina.data','ibn_sina.label'},...
+    {'spambase', 'spambase.data','spambase.label'}
     };
 
 % MAKE SELECTION HERE
@@ -32,7 +32,6 @@ select_mdl = 1;
 model_name = models{select_mdl}{1}
 model_data  = models{select_mdl}{2};
 model_label  = models{select_mdl}{3};
-training_size  = models{select_mdl}{4};
 
 % SCALE
 scales = {'log', 'linear'};
@@ -48,7 +47,7 @@ strategies = {'vote_entropy', 'qbc', 'uc', 'random'};
 
 % Strategy Selection
 % select_strat = input('Which strategy (1) Vote (2) QBC (3) Uncertainty Sampling (4) Random ?  ');
-select_strat = 4;
+select_strat = 3;
 strategy = strategies{select_strat}
 
 
@@ -58,20 +57,16 @@ strategy = strategies{select_strat}
 
 fname = fullfile(dir_data,model_data);
 all_data = load(fname);
+[sample_steps,~] = size(all_data);
 fname = fullfile(dir_data,model_label);
 all_labels = load(fname);
-if select_mdl == 3
-    cv = cvpartition(4601, 'Kfold', 2);
-    train_X = all_data(training(cv, 2),:);
-    test_X  = all_data(test(cv, 2),:);
-    train_Y = all_labels(training(cv, 2),:);
-    test_Y  = all_labels(test(cv,2),:);
-else
-    train_X = all_data(1:training_size,:);
-    test_X  = all_data(training_size+1:end,:);
-    train_Y = all_labels(1:training_size,:);
-    test_Y  = all_labels(training_size+1:end,:);
-end
+
+cv = cvpartition(sample_steps, 'Kfold', 2);
+train_X = all_data(training(cv, 2),:);
+test_X  = all_data(test(cv, 2),:);
+train_Y = all_labels(training(cv, 2),:);
+test_Y  = all_labels(test(cv,2),:);
+
 
 
 
@@ -86,7 +81,7 @@ end
 seed = 8; % 1/misclassication error ~ 8
 increment = 2;
 max_sample = 100;
-num_samples = setScale(scale, train_n, seed, increment, max_sample);
+sample_steps = setScale(scale, train_n, seed, increment, max_sample);
 
 % Load Random query data
 [dt_results_random, krr_results_random] = loadRandomData(select_mdl, scale, seed);
@@ -95,11 +90,11 @@ num_samples = setScale(scale, train_n, seed, increment, max_sample);
 %     trainAndTest('random', num_samples,train_X, train_Y,test_X, test_Y, select_mdl, scale);
 
 [ dt_results_strat, krr_results_strat ] =...
-    trainAndTest(strategy, num_samples,train_X, train_Y,test_X, test_Y, select_mdl, scale);
+    trainAndTest(strategy, sample_steps,train_X, train_Y,test_X, test_Y, select_mdl, scale);
 
 
 %% PLOT
-x = num_samples;
+x = sample_steps;
 y = horzcat(dt_results_random', krr_results_random',...
     dt_results_strat', krr_results_strat');
 

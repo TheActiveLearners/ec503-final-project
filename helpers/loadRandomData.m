@@ -4,7 +4,7 @@ function [ dt_results_random, krr_results_random ] = loadRandomData( dataset, sc
 addpath('results')
 switch scale
     case 'log'
-        start_id = log2(seed) - 1;
+        start_id = log2(seed) + 1;
         if dataset == 1 %ALEX
             dt_results_random = load('dt_results_log_all_random_alex_100');
             dt_results_random = dt_results_random.dt_results_strat(start_id:end);

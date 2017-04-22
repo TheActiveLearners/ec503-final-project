@@ -22,6 +22,60 @@ untrained_Y = Y(~sel_idx);
 % Train a SVM on only trained data
 % Alex - Adding KernelScale 'auto' and KernelFunction 'RBF' improved performance
 % IBN - Adding KernelScale 'auto' and KernelFunction 'RBF' improved performance
+% svm_mdl = fitcsvm(trained_X,trained_Y,...
+%                   'ClassNames',unique(Y),...
+%                   'Standardize',true,...
+%                   'OutlierFraction',0.05);
+
+
+% METHOD 1 - POSTERIOR 
+% Get Posterior distribution for each untrained X
+% [score_mdl,~] = fitSVMPosterior(svm_mdl);
+% [~,post_dist] = predict(score_mdl,X);
+% % 1st column - positive class posterior probabilities
+% cl_1_post = post_dist(:,1);
+% cl_1_uncertain = abs(0.5 - cl_1_post);
+% [all_dist_1, all_indicies_2] = sort(cl_1_uncertain, 'ascend');
+% min_indices = all_indicies_2;
+
+% [all_dist_1, all_indicies_3] = sort(cl_1_uncertain, 'descend');
+%  
+% METHOD 2 - USE K NEAREST
+% [~,d] = dsearchn(svm_mdl.SupportVectors,untrained_X);
+% [all_dist_2, all_indicies_2] = sort(d, 'ascend');
+% [all_dist_3, all_indicies_3] = sort(d, 'descend');
+% if any(svm_mdl.Beta)
+%     d = untrained_X * svm_mdl.Beta + svm_mdl.Bias;
+%     [all_dist_3, all_indicies_3] = sort(d, 'descend')
+% else
+%     all_indicies_3 = ~sel_idx;
+% end
+
+
+
+% METHOD 3 - USING MOST DEVIATED
+% k = exp(3);
+% scaled = 0;
+% W = ridge(trained_Y, trained_X, k, scaled);
+% b = W(1);
+% w = W(2:end);
+% 
+% y_hat = untrained_X * w + b;
+% [all_dist_3,all_indicies_2] = sort(abs(y_hat), 'descend'); 
+% [all_dist_3,all_indicies_3] = sort(abs(y_hat), 'ascend'); 
+% 
+
+
+% [~,d] = dsearchn(mean(svm_mdl.SupportVectors), X);
+% [all_dist_1, all_indices_1] = sort(d, 'ascend');
+
+% Find difference to account for aggregate selections
+% Get k smallest posteriors
+
+
+% Train a SVM on only trained data
+% Alex - Adding KernelScale 'auto' and KernelFunction 'RBF' improved performance
+% IBN - Adding KernelScale 'auto' and KernelFunction 'RBF' improved performance
 mdl = fitcsvm(trained_X,trained_Y,...
                   'ClassNames',unique(Y),...
                   'KernelFunction','RBF',...
