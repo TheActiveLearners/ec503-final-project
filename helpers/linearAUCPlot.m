@@ -36,7 +36,7 @@ end
 % TITLE
 title(in_title);
 % LEGEND
-legend(in_legend, 'location', 'southeast');
+legend(in_legend, 'location', 'southeastoutside');
 % Y-AXIS LABEL
 ylabel(y_label);
 % X-AXIS LABEL

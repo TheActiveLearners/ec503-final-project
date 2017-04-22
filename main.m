@@ -21,7 +21,8 @@ addpath(dir_data, dir_results, dir_classifier, dir_query, dir_helper);
 % MODELS
 models = {
     {'alex', 'alex.data', 'alex.label', 5000},...
-    {'ibn_sina', 'ibn_sina.data','ibn_sina.label', 10361}
+    {'ibn_sina', 'ibn_sina.data','ibn_sina.label', 10361},...
+    {'spambase', 'spambase.data','spambase.label', floor(4601/2)}
     };
 
 % MAKE SELECTION HERE
@@ -42,7 +43,7 @@ select_scale = 1;
 scale = scales{select_scale}
 
 % Load Random query data
-[dt_results_random, krr_results_random] = loadRandomData(select_mdl, scale);
+% [dt_results_random, krr_results_random] = loadRandomData(select_mdl, scale);
 
 
 % QUERY STRATEGIES
@@ -62,10 +63,19 @@ fname = fullfile(dir_data,model_data);
 all_data = load(fname);
 fname = fullfile(dir_data,model_label);
 all_labels = load(fname);
-train_X = all_data(1:training_size,:);
-test_X  = all_data(training_size+1:end,:);
-train_Y = all_labels(1:training_size,:);
-test_Y  = all_labels(training_size+1:end,:);
+if select_mdl == 3
+    cv = cvpartition(4601, 'Kfold', 2);
+    train_X = all_data(training(cv, 2),:);
+    test_X  = all_data(test(cv, 2),:);
+    train_Y = all_labels(training(cv, 2),:);
+    test_Y  = all_labels(test(cv,2),:);
+else
+    train_X = all_data(1:training_size,:);
+    test_X  = all_data(training_size+1:end,:);
+    train_Y = all_labels(1:training_size,:);
+    test_Y  = all_labels(training_size+1:end,:);
+end
+
 
 
 %% TRAIN and TEST
@@ -76,11 +86,13 @@ test_Y  = all_labels(training_size+1:end,:);
 [test_n,test_d] = size(test_X);
 
 % Set the Scale for the tests
-seed = 4;
+seed = 8; % 1/misclassication error ~ 8
 increment = 2;
 max_sample = 100;
 num_samples = setScale(scale, train_n, seed, increment, max_sample);
 
+[ dt_results_random, krr_results_random ] =...
+    trainAndTest('random', num_samples,train_X, train_Y,test_X, test_Y, select_mdl, scale);
 
 [ dt_results_strat, krr_results_strat ] =...
     trainAndTest(strategy, num_samples,train_X, train_Y,test_X, test_Y, select_mdl, scale);
@@ -88,7 +100,7 @@ num_samples = setScale(scale, train_n, seed, increment, max_sample);
 
 %% PLOT
 x = num_samples;
-y = horzcat(dt_results_random(2:end)', krr_results_random(2:end)',...
+y = horzcat(dt_results_random', krr_results_random',...
     dt_results_strat', krr_results_strat');
 
 
@@ -101,10 +113,10 @@ if strcmp(scale, 'log')
         legend,...
         'Plot of CCR for training size between 1 to max training size');
     
-    logAUCPlot(x,'Training Size',...
-        y,'AUC',...
-        legend,...
-        'Plot of AUC for training size between 1 to max training size');
+%     logAUCPlot(x,'Training Size',...
+%         y,'AUC',...
+%         legend,...
+%         'Plot of AUC for training size between 1 to max training size');
 else
     linearCCRPlot(x,'Training Size',...
         y,'CCR',...
