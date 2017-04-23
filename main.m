@@ -22,13 +22,16 @@ addpath(dir_data, dir_results, dir_classifier, dir_query, dir_helper);
 models = {
     {'alex', 'alex.data', 'alex.label'},...
     {'ibn_sina', 'ibn_sina.data','ibn_sina.label'},...
-    {'spambase', 'spambase.data','spambase.label'}
+    {'spambase', 'spambase.data','spambase.label'},...
+    {'linSep', 'linSep_data.mat','linSep_label.mat'},...
+    {'nonLinSep','nonLinSep_data.mat','nonLinSep_label.mat'},...
+    {'nonLinSep2','nonLinSep_data2.mat','nonLinSep_label2.mat'}
     };
 
 % MAKE SELECTION HERE
 % Model Selection
 % select_mdl = input('Which dataset (1) ALEX (2) IBN_SINA ?  ');
-select_mdl = 1;
+select_mdl = 5;
 model_name = models{select_mdl}{1}
 model_data  = models{select_mdl}{2};
 model_label  = models{select_mdl}{3};
@@ -57,9 +60,29 @@ strategy = strategies{select_strat}
 
 fname = fullfile(dir_data,model_data);
 all_data = load(fname);
+if(class(all_data) == 'struct')
+    switch select_mdl
+        case 5
+            all_data = all_data.X_nonLinSep;
+        case 4
+            all_data = all_data.X_linSep;
+        case 6
+            all_data = all_data.X_nonLinSep2;
+    end
+end
 [sample_steps,~] = size(all_data);
 fname = fullfile(dir_data,model_label);
 all_labels = load(fname);
+if(class(all_labels) == 'struct')
+    switch select_mdl
+        case 5
+            all_labels = all_labels.Y_nonLinSep;
+        case 4
+            all_labels = all_labels.Y_linSep;
+        case 6
+            all_labels = all_labels.Y_nonLinSep2;
+    end
+end
 
 cv = cvpartition(sample_steps, 'Kfold', 2);
 train_X = all_data(training(cv, 2),:);
@@ -84,10 +107,10 @@ max_sample = 100;
 sample_steps = setScale(scale, train_n, seed, increment, max_sample);
 
 % Load Random query data
-[dt_results_random, krr_results_random] = loadRandomData(select_mdl, scale, seed);
+% [dt_results_random, krr_results_random] = loadRandomData(select_mdl, scale, seed);
 
-% [ dt_results_random, krr_results_random ] =...
-%     trainAndTest('random', num_samples,train_X, train_Y,test_X, test_Y, select_mdl, scale);
+[ dt_results_random, krr_results_random ] =...
+     trainAndTest('random', sample_steps,train_X, train_Y,test_X, test_Y, select_mdl, scale);
 
 [ dt_results_strat, krr_results_strat ] =...
     trainAndTest(strategy, sample_steps,train_X, train_Y,test_X, test_Y, select_mdl, scale);

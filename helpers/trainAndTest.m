@@ -19,7 +19,7 @@ function [ dt_results, krr_results ] = trainAndTest(strategy, sample_steps, trai
 %------------- BEGIN CODE --------------
 
 % Set the max number of trials -- must be greater than 1
-trials = 1;
+trials = 10;
 
 % Data set sizes - n: samples, d: features
 [train_n,~] = size(train_X);
