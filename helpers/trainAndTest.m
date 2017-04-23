@@ -1,4 +1,4 @@
-function [ dt_results, krr_results ] = trainAndTest(strategy, sample_steps, train_X, train_Y, test_X, test_Y, select_mdl, scale)
+function [ dt_results, krr_results, kmeans_results ] = trainAndTest(strategy, sample_steps, train_X, train_Y, test_X, test_Y, select_mdl, scale)
 % trainAndTest
 % Runs train and test depending on the strategy
 %
@@ -16,6 +16,8 @@ function [ dt_results, krr_results ] = trainAndTest(strategy, sample_steps, trai
 % Outputs:
 %    dt_result - CCR for each num training samples: tmax x num_samples
 %    krr_result - CCR for each num training samples: tmax x num_samples
+%    kmeans_results - CCR for each num training samples: tmax x num_samples
+
 %------------- BEGIN CODE --------------
 
 % Set the max number of trials -- must be greater than 1
@@ -27,6 +29,7 @@ trials = 10;
 % Initialize temporary array to hold results
 dt_temp_results = zeros(trials, length(sample_steps));
 krr_temp_results = zeros(trials, length(sample_steps));
+kmeans_temp_results = zeros(trials,length(sample_steps));
 
 % For each trial
 for t = 1:trials
@@ -43,10 +46,12 @@ for t = 1:trials
         % *_sel_point is redefined after each iteration
         dt_mdl  = DT_train(train_X, train_Y, sel_idx);
         krr_mdl = KRR_train(train_X, train_Y, sel_idx);
+        [kmeans_idx, c] = KMEANS_train(train_X, sel_idx);
         
         % TEST
         dt_temp_results(t,i)  = DT_test(dt_mdl, test_X, test_Y);
         krr_temp_results(t,i) = KRR_test(krr_mdl, test_X, test_Y);
+        kmeans_temp_results(t,i) = KMEANS_test(kmeans_idx, c, test_X, test_Y);
         
     end % END FOR - training loop
     
@@ -55,9 +60,11 @@ end % END FOR - repetition loops
 if trials > 1
     dt_results = mean(dt_temp_results);
     krr_results = mean(krr_temp_results);
+    kmeans_results = mean(kmeans_temp_results);
 else
     dt_results = dt_temp_results;
     krr_results = krr_temp_results;
+    kmeans_results = kmeans_results;
 end
 
 

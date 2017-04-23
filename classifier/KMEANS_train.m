@@ -14,10 +14,9 @@ function [ kmean_idx, C, sel_idx ] = KMEANS_train( X, sel_idx)
 
 % Ridge Regression centered around zero
 trained_X = zeros(size(X));
-trained_Y = zeros(size(Y));
 % Reveal rows that were selected by the query
 trained_X(sel_idx,:) = X(sel_idx,:);
-trained_Y(sel_idx,:) = Y(sel_idx,:);
+
 
 % Train the model
 [kmean_idx,C] = kmeans(trained_X, 2);

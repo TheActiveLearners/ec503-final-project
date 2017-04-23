@@ -31,7 +31,7 @@ models = {
 % MAKE SELECTION HERE
 % Model Selection
 % select_mdl = input('Which dataset (1) ALEX (2) IBN_SINA ?  ');
-select_mdl = 6;
+select_mdl = 5;
 model_name = models{select_mdl}{1}
 model_data  = models{select_mdl}{2};
 model_label  = models{select_mdl}{3};
@@ -109,21 +109,21 @@ sample_steps = setScale(scale, train_n, seed, increment, max_sample);
 % Load Random query data
 % [dt_results_random, krr_results_random] = loadRandomData(select_mdl, scale, seed);
 
-[ dt_results_random, krr_results_random ] =...
+[ dt_results_random, krr_results_random, kmeans_results_random ] =...
      trainAndTest('random', sample_steps,train_X, train_Y,test_X, test_Y, select_mdl, scale);
 
-[ dt_results_strat, krr_results_strat ] =...
+[ dt_results_strat, krr_results_strat, kmeans_results_strat ] =...
     trainAndTest(strategy, sample_steps,train_X, train_Y,test_X, test_Y, select_mdl, scale);
 
 
 %% PLOT
 x = sample_steps;
-y = horzcat(dt_results_random', krr_results_random',...
-    dt_results_strat', krr_results_strat');
+y = horzcat(dt_results_random', krr_results_random', kmeans_results_random',...
+    dt_results_strat', krr_results_strat', kmeans_results_strat');
 
 
-legend = {'dt_{random}', 'krr_{random}',...
-    strcat('dt_{',strategy,'}'), strcat('krr_{',strategy,'}')};
+legend = {'dt_{random}', 'krr_{random}', 'kmeans_{random}',...
+    strcat('dt_{',strategy,'}'), strcat('krr_{',strategy,'}'), strcat('kmeans_{',strategy,'}')};
 
 if strcmp(scale, 'log')
     logCCRPlot(x,'Training Size',...
