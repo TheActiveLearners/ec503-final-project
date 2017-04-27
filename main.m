@@ -31,7 +31,7 @@ models = {
 % MAKE SELECTION HERE
 % Model Selection
 % select_mdl = input('Which dataset (1) ALEX (2) IBN_SINA ?  ');
-select_mdl = 5;
+select_mdl = 1;
 model_name = models{select_mdl}{1}
 model_data  = models{select_mdl}{2};
 model_label  = models{select_mdl}{3};
@@ -101,29 +101,30 @@ test_Y  = all_labels(test(cv,2),:);
 [test_n,test_d] = size(test_X);
 
 % Set the Scale for the tests
-seed = 8; % 1/misclassication error ~ 8
-increment = 2;
-max_sample = 100;
+% set seed = 1/misclassication error ~ 8
+seed = 8; % used for both linear and log
+increment = 2; % used for linear only
+max_sample = 100; % used for linear only
 sample_steps = setScale(scale, train_n, seed, increment, max_sample);
 
 % Load Random query data
 % [dt_results_random, krr_results_random] = loadRandomData(select_mdl, scale, seed);
 
-[ dt_results_random, krr_results_random, kmeans_results_random ] =...
-     trainAndTest('random', sample_steps,train_X, train_Y,test_X, test_Y, select_mdl, scale);
+[ dt_results_random, nb_results_random ] =...
+      trainAndTest('random', sample_steps,train_X, train_Y,test_X, test_Y);
 
-[ dt_results_strat, krr_results_strat, kmeans_results_strat ] =...
-    trainAndTest(strategy, sample_steps,train_X, train_Y,test_X, test_Y, select_mdl, scale);
+[ dt_results_strat, nb_results_strat ] =...
+    trainAndTest(strategy, sample_steps,train_X, train_Y,test_X, test_Y);
 
 
 %% PLOT
 x = sample_steps;
-y = horzcat(dt_results_random', krr_results_random', kmeans_results_random',...
-    dt_results_strat', krr_results_strat', kmeans_results_strat');
+y = horzcat(dt_results_random', nb_results_random',...
+            dt_results_strat', nb_results_strat');
 
 
-legend = {'dt_{random}', 'krr_{random}', 'kmeans_{random}',...
-    strcat('dt_{',strategy,'}'), strcat('krr_{',strategy,'}'), strcat('kmeans_{',strategy,'}')};
+legend = {'dt_{random}', 'nb_{random}',...
+           strcat('dt_{',strategy,'}'), strcat('nb_{',strategy,'}')};
 
 if strcmp(scale, 'log')
     logCCRPlot(x,'Training Size',...

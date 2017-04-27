@@ -1,4 +1,4 @@
-function [ new_x ] = updateQueryIdx( strategy, sel_idx, num_select, X, Y )
+function [ new_x ] = updateQueryIdx( strategy, classifier, sel_idx, num_select, X, Y )
 % getNewX
 % Given a strategy, returns new data point index
 %
@@ -19,7 +19,7 @@ if any(sel_idx) && num_select ~= train_n
     % call query strategy
     switch strategy
         case 'uc'
-            new_x = UC(X, Y, sel_idx, num_select);
+            new_x = UC(X, Y, sel_idx, num_select, classifier);
         case 'random'
             new_x = RAND(sel_idx, num_select);
         case 'vote_entropy'
@@ -27,7 +27,7 @@ if any(sel_idx) && num_select ~= train_n
         case 'qbc'
             new_x = QBC(X, Y, sel_idx);
         otherwise
-            disp('ERROR')
+            error('Not a valid strategy')
     end % END SWITCH
 else
     % call default random query strategy

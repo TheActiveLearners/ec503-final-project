@@ -1,4 +1,4 @@
-function [ sel_idx ] = UC(X, Y, sel_idx, num_to_select)
+function [ sel_idx ] = UC(X, Y, sel_idx, num_to_select, classifier)
 % Uncertainty Sampling
 % Takes test data X and returns a single data point
 %
@@ -18,19 +18,33 @@ trained_Y = Y(sel_idx,:);
 untrained_X = X(~sel_idx,:);
 % untrained_Y = Y(~sel_idx); % Should not be using untrained_Y
 
+switch classifier
+    case 'dt'
+        % Uncertainty Sampling for Decision Trees
+        % Train a DT on only trained data
+        dt_mdl = fitctree(trained_X, trained_Y);
 
-% METHOD 1 - POSTERIOR 
-% Train a NB on only trained data
-nb_mdl = fitcnb(trained_X, trained_Y,'Distribution','kernel');
+        % Get Posterior distribution for each untrained X
+        [~,post_dist,~,~] = predict(dt_mdl,untrained_X);
 
-% Get Posterior distribution for each untrained X
-[~,post_dist,~] = predict(nb_mdl,untrained_X);
-
-
-% 1st column - positive class posterior probabilities
-cl_1_post = post_dist(:,1);
-cl_1_uncertain = abs(0.5 - cl_1_post);
-[all_dist_1, trained_indicies] = sort(cl_1_uncertain, 'ascend');
+        % 1st column - positive class posterior probabilities
+        cl_1_post = post_dist(:,1);
+        cl_1_uncertain = abs(0.5 - cl_1_post);
+        [all_dist, trained_indicies] = sort(cl_1_uncertain, 'ascend');
+        
+    case 'nb'
+        % Uncertainty Sampling for Naive Bayes
+        % Train a NB on only trained data
+        nb_mdl = fitcnb(trained_X, trained_Y,'Distribution','kernel');
+        % Get Posterior distribution for each untrained X
+        [~,post_dist,~] = predict(nb_mdl,untrained_X);
+        % 1st column - positive class posterior probabilities
+        cl_1_post = post_dist(:,1);
+        cl_1_uncertain = abs(0.5 - cl_1_post);
+        [all_dist, trained_indicies] = sort(cl_1_uncertain, 'ascend');
+    otherwise
+            error('Not a valid classifier')    
+end % END SWITCH
 
 % Match the global all_indicies to the trained_indicies to the 
 [untrain_n, ~] = size(untrained_X);

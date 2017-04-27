@@ -18,6 +18,24 @@ trained_Y = Y(sel_idx,:);
 untrained_X = X(~sel_idx,:);
 untrained_Y = Y(~sel_idx);
 
+% METHOD 1 - POSTERIOR 
+% Train a NB on only trained data
+nb_mdl = fitcnb(trained_X, trained_Y,'Distribution','kernel');
+
+% Get Posterior distribution for each untrained X
+[~,post_dist,~] = predict(nb_mdl,untrained_X);
+
+
+% 1st column - positive class posterior probabilities
+cl_1_post = post_dist(:,1);
+cl_1_uncertain = abs(0.5 - cl_1_post);
+[all_dist_1, trained_indicies] = sort(cl_1_uncertain, 'ascend');
+
+% Match the global all_indicies to the trained_indicies to the 
+[untrain_n, ~] = size(untrained_X);
+% [all_indicies, trained_indicies] 
+untrained_indicies = horzcat(find(~sel_idx), (1:untrain_n)');
+
 
 % Train a SVM on only trained data
 % Alex - Adding KernelScale 'auto' and KernelFunction 'RBF' improved performance
