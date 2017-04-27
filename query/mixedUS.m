@@ -1,4 +1,4 @@
-function [ sel_idx ] = mixedUS(X, Y, sel_idx, num_to_select, classifier)
+function [ sel_idx ] = mixedUS(sel_idx, num_to_select, classifier)
 % Mixed - Uncertainty Sampling
 % Takes test data X and returns a single data point
 %
@@ -12,10 +12,12 @@ function [ sel_idx ] = mixedUS(X, Y, sel_idx, num_to_select, classifier)
 %    new_sel_idx - logical array of selected indicies: num_sample x 1
 %------------- BEGIN CODE --------------
 
+global TRAIN_X TRAIN_Y;
+
 % Get only those rows from X and Y
-trained_X = X(sel_idx,:);
-trained_Y = Y(sel_idx,:);
-untrained_X = X(~sel_idx,:);
+trained_X = TRAIN_X(sel_idx,:);
+trained_Y = TRAIN_Y(sel_idx,:);
+untrained_X = TRAIN_X(~sel_idx,:);
 % untrained_Y = Y(~sel_idx); % Should not be using untrained_Y
 
 orig_selected = sum(sel_idx);

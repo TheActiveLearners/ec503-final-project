@@ -1,4 +1,4 @@
-function [ svm_mdl ] = SVM_train( X, Y, sel_idx)
+function [ svm_mdl ] = SVM_train( sel_idx)
 % Decision Tree Train
 % Takes current state of model and returns a new one
 %
@@ -12,10 +12,11 @@ function [ svm_mdl ] = SVM_train( X, Y, sel_idx)
 %    dt_mdl - New DT model: struct
 %------------- BEGIN CODE --------------
 
+global TRAIN_X TRAIN_Y;
 
 % Get only those rows from X and Y
-trained_X = X(sel_idx,:);
-trained_Y = Y(sel_idx,:);
+trained_X = TRAIN_X(sel_idx,:);
+trained_Y = TRAIN_Y(sel_idx,:);
 
 % Train the model
 svm_mdl = fitcsvm(trained_X,trained_Y,'Standardize',true,'KernelFunction','RBF',...

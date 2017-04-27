@@ -1,8 +1,5 @@
 function [ cl1_results_st1, cl2_results_st1,...
-    cl1_results_st2, cl2_results_st2 ] = trainAndTest(st1, st2,...
-    sample_steps,...
-    train_X, train_Y,...
-    test_X, test_Y)
+    cl1_results_st2, cl2_results_st2 ] = trainAndTest(st1, st2, sample_steps)
 % trainAndTest
 % Runs train and test depending on the strategy
 %
@@ -24,11 +21,13 @@ function [ cl1_results_st1, cl2_results_st1,...
 
 %------------- BEGIN CODE --------------
 
+global TRAIN_X;
+
 % Set the max number of trials -- must be greater than 1
-trials = 10;
+trials = 1;
 
 % Data set sizes - n: samples, d: features
-[train_n,~] = size(train_X);
+[train_n,~] = size(TRAIN_X);
 
 % Initialize temporary array to hold results
 cl1_temp_results_st1 = zeros(trials, length(sample_steps));
@@ -52,32 +51,32 @@ for t = 1:trials
     for iter_samples = sample_steps
         i = find(iter_samples == sample_steps);
         % Updates the selection vector given the strategy, s
-        cl1_sel_idx_st1 = updateQueryIdx(st1, 'dt', cl1_sel_idx_st1, iter_samples, train_X, train_Y);
+        cl1_sel_idx_st1 = updateQueryIdx(st1, 'dt', cl1_sel_idx_st1, iter_samples);
         % if first iteration, copy seed from dt_sel to nb_sel - both start at same place
         if i == 1
             cl2_sel_idx_st1 = cl1_sel_idx_st1;
             cl1_sel_idx_st2 = cl1_sel_idx_st1;
             cl2_sel_idx_st2 = cl1_sel_idx_st1;
         else
-            cl2_sel_idx_st1 = updateQueryIdx(st1, 'svm', cl2_sel_idx_st1, iter_samples, train_X, train_Y);
-            cl1_sel_idx_st2 = updateQueryIdx(st2, 'dt', cl1_sel_idx_st2, iter_samples, train_X, train_Y);
-            cl2_sel_idx_st2 = updateQueryIdx(st2, 'svm', cl2_sel_idx_st2, iter_samples, train_X, train_Y);
+            cl2_sel_idx_st1 = updateQueryIdx(st1, 'svm', cl2_sel_idx_st1, iter_samples);
+            cl1_sel_idx_st2 = updateQueryIdx(st2, 'dt', cl1_sel_idx_st2, iter_samples);
+            cl2_sel_idx_st2 = updateQueryIdx(st2, 'svm', cl2_sel_idx_st2, iter_samples);
         end
         
         % TRAIN
         % *_sel_point is redefined after each iteration
-        cl1_mdl_st1  = DT_train(train_X, train_Y, cl1_sel_idx_st1);
-        cl2_mdl_st1  = SVM_train(train_X, train_Y, cl2_sel_idx_st1);
+        cl1_mdl_st1  = DT_train(cl1_sel_idx_st1);
+        cl2_mdl_st1  = SVM_train(cl2_sel_idx_st1);
         
-        cl1_mdl_st2  = DT_train(train_X, train_Y, cl1_sel_idx_st2);
-        cl2_mdl_st2  = SVM_train(train_X, train_Y, cl2_sel_idx_st2);
+        cl1_mdl_st2  = DT_train(cl1_sel_idx_st2);
+        cl2_mdl_st2  = SVM_train(cl2_sel_idx_st2);
         
         % TEST
-        cl1_temp_results_st1(t,i) = DT_test(cl1_mdl_st1, test_X, test_Y);
-        cl2_temp_results_st1(t,i) = SVM_test(cl2_mdl_st1, test_X, test_Y);
+        cl1_temp_results_st1(t,i) = DT_test(cl1_mdl_st1);
+        cl2_temp_results_st1(t,i) = SVM_test(cl2_mdl_st1);
         
-        cl1_temp_results_st2(t,i) = DT_test(cl1_mdl_st2, test_X, test_Y);
-        cl2_temp_results_st2(t,i) = SVM_test(cl2_mdl_st2, test_X, test_Y);
+        cl1_temp_results_st2(t,i) = DT_test(cl1_mdl_st2);
+        cl2_temp_results_st2(t,i) = SVM_test(cl2_mdl_st2);
         
     end % END FOR - training loop
     

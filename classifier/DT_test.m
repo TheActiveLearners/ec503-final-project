@@ -1,4 +1,4 @@
-function [ ccr ] = DT_test( mdl, X, Y )
+function [ ccr ] = DT_test( mdl )
 % Decision Tree Test
 % Takes test data X and corresponding labels Y and returns a CCR
 %
@@ -12,9 +12,10 @@ function [ ccr ] = DT_test( mdl, X, Y )
 %    ccr - Correct Classification Rate: scalar
 %------------- BEGIN CODE --------------
 
+global TEST_X TEST_Y;
 
-Y_hat = predict(mdl,X);
-confmat = confusionmat(Y, Y_hat);
+Y_hat = predict(mdl,TEST_X);
+confmat = confusionmat(TEST_Y, Y_hat);
 ccr = trace(confmat)/sum(sum(confmat));
 
 end % END FUNCTION

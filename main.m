@@ -89,23 +89,20 @@ end
 
 cv = cvpartition(sample_steps, 'Kfold', 2);
 
-global train_X test_X train_Y test_Y;
+global TRAIN_X TEST_X TRAIN_Y TEST_Y;
 
-train_X = all_data(training(cv, 2),:);
-test_X  = all_data(test(cv, 2),:);
-train_Y = all_labels(training(cv, 2),:);
-test_Y  = all_labels(test(cv,2),:);
-
-
-
+TRAIN_X = all_data(training(cv, 2),:);
+TEST_X  = all_data(test(cv, 2),:);
+TRAIN_Y = all_labels(training(cv, 2),:);
+TEST_Y  = all_labels(test(cv,2),:);
 
 
 %% TRAIN and TEST
 % Perform incremental tests on the data
 
 % Data set sizes - n: samples, d: features
-[train_n,train_d] = size(train_X);
-[test_n,test_d] = size(test_X);
+[train_n,train_d] = size(TRAIN_X);
+[test_n,test_d] = size(TEST_X);
 
 % Set the Scale for the tests
 % set seed = 1/misclassication error ~ 8
@@ -119,7 +116,7 @@ sample_steps = setScale(scale, train_n, seed, increment, max_sample);
 
 [ cl1_results_random, cl2_results_random,...
     cl1_results_strat, cl2_results_strat ] =...
-    trainAndTest('random', strategy, sample_steps,train_X, train_Y,test_X, test_Y);
+    trainAndTest('random', strategy, sample_steps);
 
 
 

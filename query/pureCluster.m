@@ -1,4 +1,4 @@
-function [ sel_idx ] = pureCluster(X, Y, sel_idx, num_to_select, classifier)
+function [ sel_idx ] = pureCluster(sel_idx, num_to_select, classifier)
 % Uncertainty Sampling
 % Takes test data X and returns a single data point
 %
