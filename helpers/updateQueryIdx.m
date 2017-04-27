@@ -18,7 +18,7 @@ function [ new_x ] = updateQueryIdx( strategy, classifier, sel_idx, num_select, 
 if any(sel_idx) && num_select ~= train_n
     % call query strategy
     switch strategy
-        case 'uc'
+        case 'us'
             new_x = UC(X, Y, sel_idx, num_select, classifier);
         case 'random'
             new_x = RAND(sel_idx, num_select);

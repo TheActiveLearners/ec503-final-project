@@ -46,7 +46,7 @@ scale = scales{select_scale}
 
 
 % QUERY STRATEGIES
-strategies = {'vote_entropy', 'qbc', 'uc', 'random'};
+strategies = {'vote_entropy', 'qbc', 'us', 'random'};
 
 % Strategy Selection
 % select_strat = input('Which strategy (1) Vote (2) QBC (3) Uncertainty Sampling (4) Random ?  ');
