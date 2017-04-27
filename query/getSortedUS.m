@@ -1,4 +1,4 @@
-function [ trained_indicies ] = sortUS( trained_X, trained_Y, untrained_X, classifier )
+function [ trained_indicies ] = getSortedUS( trained_X, trained_Y, untrained_X, classifier )
 %SORTUS Summary of this function goes here
 %   Detailed explanation goes here
 
