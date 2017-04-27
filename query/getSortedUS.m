@@ -26,6 +26,19 @@ switch classifier
         cl_1_post = post_dist(:,1);
         cl_1_uncertain = abs(0.5 - cl_1_post);
         [all_dist, trained_indicies] = sort(cl_1_uncertain, 'ascend');
+        
+    case 'svm'
+        % Uncertainty Sampling for KRR
+        % Train a NB on only trained data
+        nb_mdl = fitcsvm(trained_X,trained_Y,'Standardize',true,'KernelFunction','RBF',...
+                        'KernelScale','auto');
+        % Get Posterior distribution for each untrained X
+        [~,post_dist] = predict(nb_mdl,untrained_X);
+        % 1st column - positive class posterior probabilities
+        cl_1_post = post_dist(:,1);
+        cl_1_uncertain = abs(0.5 - cl_1_post);
+        [all_dist, trained_indicies] = sort(cl_1_uncertain, 'ascend');
+        
     otherwise
             error('Not a valid classifier')    
 end % END SWITCH

@@ -1,4 +1,8 @@
-function [ dt_results, nb_results ] = trainAndTest(strategy, sample_steps, train_X, train_Y, test_X, test_Y)
+function [ cl1_results_st1, cl2_results_st1,...
+    cl1_results_st2, cl2_results_st2 ] = trainAndTest(st1, st2,...
+    sample_steps,...
+    train_X, train_Y,...
+    test_X, test_Y)
 % trainAndTest
 % Runs train and test depending on the strategy
 %
@@ -21,56 +25,76 @@ function [ dt_results, nb_results ] = trainAndTest(strategy, sample_steps, train
 %------------- BEGIN CODE --------------
 
 % Set the max number of trials -- must be greater than 1
-trials = 3;
+trials = 10;
 
 % Data set sizes - n: samples, d: features
 [train_n,~] = size(train_X);
 
 % Initialize temporary array to hold results
-dt_temp_results = zeros(trials, length(sample_steps));
-nb_temp_results = zeros(trials, length(sample_steps));
-% kmeans_temp_results = zeros(trials,length(sample_steps));
+cl1_temp_results_st1 = zeros(trials, length(sample_steps));
+cl2_temp_results_st1 = zeros(trials, length(sample_steps));
+
+cl1_temp_results_st2 = zeros(trials, length(sample_steps));
+cl2_temp_results_st2 = zeros(trials, length(sample_steps));
+
 
 % For each trial
 for t = 1:trials
     t
     % Reset all the selected indicies to false
-    dt_sel_idx = false(train_n,1);
-    nb_sel_idx = false(train_n,1);
+    cl1_sel_idx_st1 = false(train_n,1);
+    cl2_sel_idx_st1 = false(train_n,1);
+    
+    cl1_sel_idx_st2 = false(train_n,1);
+    cl2_sel_idx_st2 = false(train_n,1);
     
     % iter_samples is the max number of training points
     for iter_samples = sample_steps
         i = find(iter_samples == sample_steps);
-        % reset rng so that random and strategy have the same seed
-        rng(i); % set at i so different for each trial
         % Updates the selection vector given the strategy, s
-        dt_sel_idx = updateQueryIdx(strategy, 'dt', dt_sel_idx, iter_samples, train_X, train_Y);
-        % if first iteration, copy seed from dt_sel to nb_sel - both start at same place         
+        cl1_sel_idx_st1 = updateQueryIdx(st1, 'dt', cl1_sel_idx_st1, iter_samples, train_X, train_Y);
+        % if first iteration, copy seed from dt_sel to nb_sel - both start at same place
         if i == 1
-            nb_sel_idx = dt_sel_idx;
+            cl2_sel_idx_st1 = cl1_sel_idx_st1;
+            cl1_sel_idx_st2 = cl1_sel_idx_st1;
+            cl2_sel_idx_st2 = cl1_sel_idx_st1;
         else
-            nb_sel_idx = updateQueryIdx(strategy, 'nb', nb_sel_idx, iter_samples, train_X, train_Y);
+            cl2_sel_idx_st1 = updateQueryIdx(st1, 'svm', cl2_sel_idx_st1, iter_samples, train_X, train_Y);
+            cl1_sel_idx_st2 = updateQueryIdx(st2, 'dt', cl1_sel_idx_st2, iter_samples, train_X, train_Y);
+            cl2_sel_idx_st2 = updateQueryIdx(st2, 'svm', cl2_sel_idx_st2, iter_samples, train_X, train_Y);
         end
         
         % TRAIN
         % *_sel_point is redefined after each iteration
-        dt_mdl  = DT_train(train_X, train_Y, dt_sel_idx);
-        nb_mdl  = NB_train(train_X, train_Y, nb_sel_idx);
+        cl1_mdl_st1  = DT_train(train_X, train_Y, cl1_sel_idx_st1);
+        cl2_mdl_st1  = SVM_train(train_X, train_Y, cl2_sel_idx_st1);
+        
+        cl1_mdl_st2  = DT_train(train_X, train_Y, cl1_sel_idx_st2);
+        cl2_mdl_st2  = SVM_train(train_X, train_Y, cl2_sel_idx_st2);
         
         % TEST
-        dt_temp_results(t,i)  = DT_test(dt_mdl, test_X, test_Y);
-        nb_temp_results(t,i)  = NB_test(nb_mdl, test_X, test_Y);
+        cl1_temp_results_st1(t,i) = DT_test(cl1_mdl_st1, test_X, test_Y);
+        cl2_temp_results_st1(t,i) = SVM_test(cl2_mdl_st1, test_X, test_Y);
+        
+        cl1_temp_results_st2(t,i) = DT_test(cl1_mdl_st2, test_X, test_Y);
+        cl2_temp_results_st2(t,i) = SVM_test(cl2_mdl_st2, test_X, test_Y);
         
     end % END FOR - training loop
     
 end % END FOR - trial loops
 
 if trials > 1
-    dt_results = mean(dt_temp_results);
-    nb_results = mean(nb_temp_results);
+    cl1_results_st1 = mean(cl1_temp_results_st1);
+    cl2_results_st1 = mean(cl2_temp_results_st1);
+    
+    cl1_results_st2 = mean(cl1_temp_results_st2);
+    cl2_results_st2 = mean(cl2_temp_results_st2);
 else
-    dt_results = dt_temp_results;
-    nb_results = nb_temp_results;
+    cl1_results_st1 = cl1_temp_results_st1;
+    cl2_results_st1 = cl2_temp_results_st1;
+    
+    cl1_results_st2 = cl1_temp_results_st2;
+    cl2_results_st2 = cl2_temp_results_st2;
 end
 
 

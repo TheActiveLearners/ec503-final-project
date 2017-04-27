@@ -7,5 +7,6 @@
 
 ## To-Do
 2. Verify Uncertainty sampling works
+3. Clustering -- find points closest to the center and train them
 3. Voting Entropy (VE)
 4. Query By Committee (QBC)

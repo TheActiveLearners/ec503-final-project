@@ -1,4 +1,4 @@
-function [ new_x ] = updateQueryIdx( strategy, classifier, sel_idx, num_select, X, Y )
+function [ new_sel_idx ] = updateQueryIdx( strategy, classifier, sel_idx, num_select, X, Y )
 % getNewX
 % Given a strategy, returns new data point index
 %
@@ -19,21 +19,25 @@ if any(sel_idx) && num_select ~= train_n
     % call query strategy
     switch strategy
         case 'pureUS'
-            new_x = pureUS(X, Y, sel_idx, num_select, classifier);
+            new_sel_idx = pureUS(X, Y, sel_idx, num_select, classifier);
         case 'mixedUS'
-            new_x = mixedUS(X, Y, sel_idx, num_select, classifier);            
+            new_sel_idx = mixedUS(X, Y, sel_idx, num_select, classifier);
+        case 'pureCluster'
+            new_sel_idx = pureCluster(X, Y, sel_idx, num_select, classifier);
+        case 'mixedCluster'
+            new_sel_idx = mixedCluster(X, Y, sel_idx, num_select, classifier);            
         case 'random'
-            new_x = RAND(sel_idx, num_select);
+            new_sel_idx = RAND(sel_idx, num_select);
         case 'vote_entropy'
-            new_x = VE(X, Y, sel_idx);
+            new_sel_idx = VE(X, Y, sel_idx);
         case 'qbc'
-            new_x = QBC(X, Y, sel_idx);
+            new_sel_idx = QBC(X, Y, sel_idx);
         otherwise
             error('Not a valid strategy')
     end % END SWITCH
 else
     % call default random query strategy
-    new_x = RAND(sel_idx, num_select);
+    new_sel_idx = RAND(sel_idx, num_select);
 end % END IF/ELSE
 end % END FUNCTION
 

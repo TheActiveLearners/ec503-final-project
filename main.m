@@ -41,12 +41,15 @@ scales = {'log', 'linear'};
 
 % Scale Selection
 % select_strat = input('Which scale (1) log (2) linear ?  ');
-select_scale = 2;
+select_scale = 1;
 scale = scales{select_scale}
 
 
 % QUERY STRATEGIES
-strategies = {'vote_entropy', 'qbc', 'pureUS', 'mixedUS', 'random'};
+strategies = {'vote_entropy', 'qbc',...
+              'pureUS', 'mixedUS',....
+              'pureCluster', 'mixedCluster',...
+              'ensemble', 'random'};
 
 % Strategy Selection
 % select_strat = input('Which strategy (1) Vote (2) QBC (3) Uncertainty Sampling (4) Random ?  ');
@@ -85,10 +88,14 @@ if(class(all_labels) == 'struct')
 end
 
 cv = cvpartition(sample_steps, 'Kfold', 2);
+
+global train_X test_X train_Y test_Y;
+
 train_X = all_data(training(cv, 2),:);
 test_X  = all_data(test(cv, 2),:);
 train_Y = all_labels(training(cv, 2),:);
 test_Y  = all_labels(test(cv,2),:);
+
 
 
 
@@ -110,17 +117,16 @@ sample_steps = setScale(scale, train_n, seed, increment, max_sample);
 % Load Random query data
 % [dt_results_random, krr_results_random] = loadRandomData(select_mdl, scale, seed);
 
-[ dt_results_random, nb_results_random ] =...
-    trainAndTest('random', sample_steps,train_X, train_Y,test_X, test_Y);
+[ cl1_results_random, cl2_results_random,...
+    cl1_results_strat, cl2_results_strat ] =...
+    trainAndTest('random', strategy, sample_steps,train_X, train_Y,test_X, test_Y);
 
-[ dt_results_strat, nb_results_strat ] =...
-    trainAndTest(strategy, sample_steps,train_X, train_Y,test_X, test_Y);
 
 
 %% PLOT
 x = sample_steps;
-y = horzcat(dt_results_random', nb_results_random',...
-            dt_results_strat', nb_results_strat');
+y = horzcat(cl1_results_random', cl2_results_random',...
+            cl1_results_strat', cl2_results_strat');
 
 
 legend = {'dt_{random}', 'nb_{random}',...
