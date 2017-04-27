@@ -1,6 +1,13 @@
-function [ trained_indicies ] = getSortedUS( trained_X, trained_Y, untrained_X, classifier )
+function [ trained_indicies ] = getSortedUS( sel_idx, classifier )
 %SORTUS Summary of this function goes here
 %   Detailed explanation goes here
+
+global TRAIN_X TRAIN_Y;
+
+% Get only those rows from X and Y
+trained_X = TRAIN_X(sel_idx,:);
+trained_Y = TRAIN_Y(sel_idx,:);
+untrained_X = TRAIN_X(~sel_idx,:);
 
 switch classifier
     case 'dt'

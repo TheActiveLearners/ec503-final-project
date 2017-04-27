@@ -22,7 +22,7 @@ untrained_X = TRAIN_X(~sel_idx,:);
 
 orig_selected = sum(sel_idx);
 
-sorted_indicies = getSortedUS(trained_X, trained_Y, untrained_X, classifier);
+sorted_indicies = getSortedUS(sel_idx, classifier);
 % Match the global all_indicies to the trained_indicies to the 
 [untrain_n, ~] = size(untrained_X);
 % [all_indicies, trained_indicies] 

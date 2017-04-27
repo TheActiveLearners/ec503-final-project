@@ -19,7 +19,7 @@ untrained_X = X(~sel_idx,:);
 % untrained_Y = Y(~sel_idx); % Should not be using untrained_Y
 
 
-sorted_indicies = getSortedCluster(trained_X, untrained_X);
+sorted_indicies = getSortedCluster(sel_idx, classifier);
 % Match the global all_indicies to the trained_indicies to the 
 [untrain_n, ~] = size(untrained_X);
 % [all_indicies, trained_indicies] 

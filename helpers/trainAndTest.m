@@ -24,7 +24,7 @@ function [ cl1_results_st1, cl2_results_st1,...
 global TRAIN_X;
 
 % Set the max number of trials -- must be greater than 1
-trials = 1;
+trials = 15;
 
 % Data set sizes - n: samples, d: features
 [train_n,~] = size(TRAIN_X);
@@ -41,16 +41,18 @@ cl2_temp_results_st2 = zeros(trials, length(sample_steps));
 for t = 1:trials
     t
     % Reset all the selected indicies to false
+    % cl1 == 'dt'     
     cl1_sel_idx_st1 = false(train_n,1);
     cl2_sel_idx_st1 = false(train_n,1);
     
+    % cl2 == 'svm'
     cl1_sel_idx_st2 = false(train_n,1);
     cl2_sel_idx_st2 = false(train_n,1);
     
     % iter_samples is the max number of training points
     for iter_samples = sample_steps
         i = find(iter_samples == sample_steps);
-        % Updates the selection vector given the strategy, s
+        % Updates the selection vector given the strategy
         cl1_sel_idx_st1 = updateQueryIdx(st1, 'dt', cl1_sel_idx_st1, iter_samples);
         % if first iteration, copy seed from dt_sel to nb_sel - both start at same place
         if i == 1
@@ -58,8 +60,8 @@ for t = 1:trials
             cl1_sel_idx_st2 = cl1_sel_idx_st1;
             cl2_sel_idx_st2 = cl1_sel_idx_st1;
         else
-            cl2_sel_idx_st1 = updateQueryIdx(st1, 'svm', cl2_sel_idx_st1, iter_samples);
             cl1_sel_idx_st2 = updateQueryIdx(st2, 'dt', cl1_sel_idx_st2, iter_samples);
+            cl2_sel_idx_st1 = updateQueryIdx(st1, 'svm', cl2_sel_idx_st1, iter_samples);
             cl2_sel_idx_st2 = updateQueryIdx(st2, 'svm', cl2_sel_idx_st2, iter_samples);
         end
         
