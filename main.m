@@ -110,12 +110,9 @@ sample_steps = setScale(scale, train_n, seed, increment, max_sample);
 % Load Random query data
 % [dt_results_random, krr_results_random] = loadRandomData(select_mdl, scale, seed);
 
-
-rng('default'); % reset rng so that random and strategy have the same seed
 [ dt_results_random, nb_results_random ] =...
     trainAndTest('random', sample_steps,train_X, train_Y,test_X, test_Y);
 
-rng('default'); % reset rng so that random and strategy have the same seed
 [ dt_results_strat, nb_results_strat ] =...
     trainAndTest(strategy, sample_steps,train_X, train_Y,test_X, test_Y);
 

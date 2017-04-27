@@ -41,6 +41,8 @@ for t = 1:trials
     % iter_samples is the max number of training points
     for iter_samples = sample_steps
         i = find(iter_samples == sample_steps);
+        % reset rng so that random and strategy have the same seed
+        rng(i); % set at i so different for each trial
         % Updates the selection vector given the strategy, s
         dt_sel_idx = updateQueryIdx(strategy, 'dt', dt_sel_idx, iter_samples, train_X, train_Y);
         % if first iteration, copy seed from dt_sel to nb_sel - both start at same place         
