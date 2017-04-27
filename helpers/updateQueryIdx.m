@@ -18,8 +18,10 @@ function [ new_x ] = updateQueryIdx( strategy, classifier, sel_idx, num_select, 
 if any(sel_idx) && num_select ~= train_n
     % call query strategy
     switch strategy
-        case 'us'
-            new_x = UC(X, Y, sel_idx, num_select, classifier);
+        case 'pureUS'
+            new_x = pureUS(X, Y, sel_idx, num_select, classifier);
+        case 'mixedUS'
+            new_x = mixedUS(X, Y, sel_idx, num_select, classifier);            
         case 'random'
             new_x = RAND(sel_idx, num_select);
         case 'vote_entropy'

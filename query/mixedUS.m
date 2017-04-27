@@ -1,5 +1,5 @@
-function [ sel_idx ] = US(X, Y, sel_idx, num_to_select, classifier)
-% Uncertainty Sampling
+function [ sel_idx ] = mixedUS(X, Y, sel_idx, num_to_select, classifier)
+% Mixed - Uncertainty Sampling
 % Takes test data X and returns a single data point
 %
 % Syntax:  [ sel_idx ] = UC(X, Y, sel_idx);
@@ -18,13 +18,14 @@ trained_Y = Y(sel_idx,:);
 untrained_X = X(~sel_idx,:);
 % untrained_Y = Y(~sel_idx); % Should not be using untrained_Y
 
+orig_selected = sum(sel_idx);
 
 sorted_indicies = getSortedUS(trained_X, trained_Y, untrained_X, classifier);
-
 % Match the global all_indicies to the trained_indicies to the 
 [untrain_n, ~] = size(untrained_X);
 % [all_indicies, trained_indicies] 
 untrained_indicies = horzcat(find(~sel_idx), (1:untrain_n)');
+
 
 % for each of the remaining untrained indicies
 for k = sorted_indicies'
@@ -36,13 +37,22 @@ for k = sorted_indicies'
     if ~sel_idx(global_idx)
         % select it         
         sel_idx(global_idx) = 1;
-        % if reached the target number to select, break early         
-        if sum(sel_idx) == num_to_select
+        % select half by uncertainty, break early
+        if sum(sel_idx) == num_to_select - floor((num_to_select - orig_selected)/2)
             break;
         end
     end
     
 end
+
+
+% RANDOM SAMPLE HALF
+pool = find(~sel_idx);
+num_selected = numel(find(sel_idx));
+% Find difference to account for aggregate selections
+i_s = randsample(pool,(num_to_select - num_selected));
+sel_idx(i_s) = true;
+
 
 % ERROR CHECKING
 if sum(sel_idx) ~= num_to_select

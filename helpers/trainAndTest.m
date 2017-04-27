@@ -21,7 +21,7 @@ function [ dt_results, nb_results ] = trainAndTest(strategy, sample_steps, train
 %------------- BEGIN CODE --------------
 
 % Set the max number of trials -- must be greater than 1
-trials = 5;
+trials = 3;
 
 % Data set sizes - n: samples, d: features
 [train_n,~] = size(train_X);
@@ -43,7 +43,12 @@ for t = 1:trials
         i = find(iter_samples == sample_steps);
         % Updates the selection vector given the strategy, s
         dt_sel_idx = updateQueryIdx(strategy, 'dt', dt_sel_idx, iter_samples, train_X, train_Y);
-        nb_sel_idx = updateQueryIdx(strategy, 'nb', nb_sel_idx, iter_samples, train_X, train_Y);
+        % if first iteration, copy seed from dt_sel to nb_sel - both start at same place         
+        if i == 1
+            nb_sel_idx = dt_sel_idx;
+        else
+            nb_sel_idx = updateQueryIdx(strategy, 'nb', nb_sel_idx, iter_samples, train_X, train_Y);
+        end
         
         % TRAIN
         % *_sel_point is redefined after each iteration
@@ -56,7 +61,7 @@ for t = 1:trials
         
     end % END FOR - training loop
     
-end % END FOR - repetition loops
+end % END FOR - trial loops
 
 if trials > 1
     dt_results = mean(dt_temp_results);

@@ -41,16 +41,16 @@ scales = {'log', 'linear'};
 
 % Scale Selection
 % select_strat = input('Which scale (1) log (2) linear ?  ');
-select_scale = 1;
+select_scale = 2;
 scale = scales{select_scale}
 
 
 % QUERY STRATEGIES
-strategies = {'vote_entropy', 'qbc', 'us', 'random'};
+strategies = {'vote_entropy', 'qbc', 'pureUS', 'mixedUS', 'random'};
 
 % Strategy Selection
 % select_strat = input('Which strategy (1) Vote (2) QBC (3) Uncertainty Sampling (4) Random ?  ');
-select_strat = 3;
+select_strat = 4;
 strategy = strategies{select_strat}
 
 
@@ -103,16 +103,19 @@ test_Y  = all_labels(test(cv,2),:);
 % Set the Scale for the tests
 % set seed = 1/misclassication error ~ 8
 seed = 8; % used for both linear and log
-increment = 2; % used for linear only
+increment = 4; % used for linear only
 max_sample = 100; % used for linear only
 sample_steps = setScale(scale, train_n, seed, increment, max_sample);
 
 % Load Random query data
 % [dt_results_random, krr_results_random] = loadRandomData(select_mdl, scale, seed);
 
-[ dt_results_random, nb_results_random ] =...
-      trainAndTest('random', sample_steps,train_X, train_Y,test_X, test_Y);
 
+rng('default'); % reset rng so that random and strategy have the same seed
+[ dt_results_random, nb_results_random ] =...
+    trainAndTest('random', sample_steps,train_X, train_Y,test_X, test_Y);
+
+rng('default'); % reset rng so that random and strategy have the same seed
 [ dt_results_strat, nb_results_strat ] =...
     trainAndTest(strategy, sample_steps,train_X, train_Y,test_X, test_Y);
 
