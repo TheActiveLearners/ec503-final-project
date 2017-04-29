@@ -1,5 +1,5 @@
 function [ trained_indicies ] = getSortedEnsemble( sel_idx )
-%SORTUS Summary of this function goes here
+%getSortedEnsemble Summary of this function goes here
 %   Detailed explanation goes here
 
 global TRAIN_X TRAIN_Y;

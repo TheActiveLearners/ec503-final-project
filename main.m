@@ -18,23 +18,23 @@ dir_query      = './query';
 dir_helper     = './helpers';
 addpath(dir_data, dir_results, dir_classifier, dir_query, dir_helper);
 
-% MODELS
-models = {
-    {'alex', 'alex.data', 'alex.label'},...
-    {'ibn_sina', 'ibn_sina.data','ibn_sina.label'},...
-    {'spambase', 'spambase.data','spambase.label'},...
-    {'linSep', 'linSep_data.mat','linSep_label.mat'},...
-    {'nonLinSep','nonLinSep_data.mat','nonLinSep_label.mat'},...
-    {'nonLinSep2','nonLinSep_data2.mat','nonLinSep_label2.mat'}
+% DATA SETS
+datasets = {
+    {'alex', 'alex.data', 'alex.label'},... % 1
+    {'ibn_sina', 'ibn_sina.data','ibn_sina.label'},... % 2
+    {'spambase', 'spambase.data','spambase.label'},... % 3
+    {'linSep', 'linSep_data.mat','linSep_label.mat'},... % 4
+    {'nonLinSep','nonLinSep_data.mat','nonLinSep_label.mat'},... % 5
+    {'nonLinSep2','nonLinSep_data2.mat','nonLinSep_label2.mat'} % 6
     };
 
 % MAKE SELECTION HERE
 % Model Selection
 % select_mdl = input('Which dataset (1) ALEX (2) IBN_SINA ?  ');
-select_mdl = 1;
-model_name = models{select_mdl}{1}
-model_data  = models{select_mdl}{2};
-model_label  = models{select_mdl}{3};
+select_dataset = 2;
+dataset_name = datasets{select_dataset}{1}
+dataset_data  = datasets{select_dataset}{2};
+dataset_label  = datasets{select_dataset}{3};
 
 % SCALE
 scales = {'log', 'linear'};
@@ -46,27 +46,27 @@ scale = scales{select_scale}
 
 
 % QUERY STRATEGIES
-strategies = {'vote_entropy', 'qbc',...
-              'pureUS', 'mixedUS',....
+strategies = {'pureUS', 'mixedUS',....
               'pureCluster', 'mixedCluster',...
               'pureEnsemble', 'mixedEnsemble',...
+              'pureDensity', 'mixedDensity',...
               'random' };
 
 % Strategy Selection
 % select_strat = input('Which strategy (1) Vote (2) QBC (3) Uncertainty Sampling (4) Random ?  ');
-select_strat = 8;
+select_strat = 5;
 strategy = strategies{select_strat}
 
 % Select number of trials
-trials = 2;
+trials = 3;
 
 %% DATA PROCESSING
 % Format the data based on selections above
 
-fname = fullfile(dir_data,model_data);
+fname = fullfile(dir_data,dataset_data);
 all_data = load(fname);
 if(class(all_data) == 'struct')
-    switch select_mdl
+    switch select_dataset
         case 5
             all_data = all_data.X_nonLinSep;
         case 4
@@ -76,10 +76,10 @@ if(class(all_data) == 'struct')
     end
 end
 [sample_steps,~] = size(all_data);
-fname = fullfile(dir_data,model_label);
+fname = fullfile(dir_data,dataset_label);
 all_labels = load(fname);
 if(class(all_labels) == 'struct')
-    switch select_mdl
+    switch select_dataset
         case 5
             all_labels = all_labels.Y_nonLinSep;
         case 4
@@ -128,8 +128,8 @@ y = horzcat(cl1_results_random', cl2_results_random',...
             cl1_results_strat', cl2_results_strat');
 
 
-legend = {'dt_{random}', 'nb_{random}',...
-           strcat('dt_{',strategy,'}'), strcat('nb_{',strategy,'}')};
+legend = {'qda_{random}', 'svm_{random}',...
+           strcat('qda_{',strategy,'}'), strcat('svm_{',strategy,'}')};
 
 if strcmp(scale, 'log')
     logCCRPlot(x,'Training Size',...
