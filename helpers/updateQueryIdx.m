@@ -1,5 +1,5 @@
 function [ new_sel_idx ] = updateQueryIdx( strategy, classifier, sel_idx, num_select)
-% getNewX
+% updateQueryIdx
 % Given a strategy, returns new data point index
 %
 % Syntax:  [ new_x ] = getNewX( s )
@@ -35,10 +35,6 @@ if any(sel_idx) && num_select ~= train_n
             new_sel_idx = mixedEnsemble(sel_idx, num_select);                   
         case 'random'
             new_sel_idx = RAND(sel_idx, num_select);
-        case 'vote_entropy'
-            new_sel_idx = VE(sel_idx);
-        case 'qbc'
-            new_sel_idx = QBC(sel_idx);
         otherwise
             error('Not a valid strategy')
     end % END SWITCH

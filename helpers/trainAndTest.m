@@ -50,31 +50,31 @@ for t = 1:trials
     for iter_samples = sample_steps
         i = find(iter_samples == sample_steps);
         % Updates the selection vector given the strategy
-        cl1_sel_idx_st1 = updateQueryIdx(st1, 'dt', cl1_sel_idx_st1, iter_samples);
+        cl1_sel_idx_st1 = updateQueryIdx(st1, 'qda', cl1_sel_idx_st1, iter_samples);
         % if first iteration, copy seed from dt_sel to nb_sel - both start at same place
         if i == 1
             cl2_sel_idx_st1 = cl1_sel_idx_st1;
             cl1_sel_idx_st2 = cl1_sel_idx_st1;
             cl2_sel_idx_st2 = cl1_sel_idx_st1;
         else
-            cl1_sel_idx_st2 = updateQueryIdx(st2, 'dt', cl1_sel_idx_st2, iter_samples);
+            cl1_sel_idx_st2 = updateQueryIdx(st2, 'qda', cl1_sel_idx_st2, iter_samples);
             cl2_sel_idx_st1 = updateQueryIdx(st1, 'svm', cl2_sel_idx_st1, iter_samples);
             cl2_sel_idx_st2 = updateQueryIdx(st2, 'svm', cl2_sel_idx_st2, iter_samples);
         end
         
         % TRAIN
         % *_sel_point is redefined after each iteration
-        cl1_mdl_st1  = DT_train(cl1_sel_idx_st1);
+        cl1_mdl_st1  = QDA_train(cl1_sel_idx_st1);
         cl2_mdl_st1  = SVM_train(cl2_sel_idx_st1);
         
-        cl1_mdl_st2  = DT_train(cl1_sel_idx_st2);
+        cl1_mdl_st2  = QDA_train(cl1_sel_idx_st2);
         cl2_mdl_st2  = SVM_train(cl2_sel_idx_st2);
         
         % TEST
-        cl1_temp_results_st1(t,i) = DT_test(cl1_mdl_st1);
+        cl1_temp_results_st1(t,i) = QDA_test(cl1_mdl_st1);
         cl2_temp_results_st1(t,i) = SVM_test(cl2_mdl_st1);
         
-        cl1_temp_results_st2(t,i) = DT_test(cl1_mdl_st2);
+        cl1_temp_results_st2(t,i) = QDA_test(cl1_mdl_st2);
         cl2_temp_results_st2(t,i) = SVM_test(cl2_mdl_st2);
         
     end % END FOR - training loop
