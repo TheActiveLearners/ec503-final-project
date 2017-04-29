@@ -1,4 +1,4 @@
-function [ trained_indicies ] = getSortedCluster( trained_X,untrained_X, classifier )
+function [ trained_indicies ] = getSortedDensity(sel_idx)
 %SORTUS Summary of this function goes here
 %   Detailed explanation goes here
 
