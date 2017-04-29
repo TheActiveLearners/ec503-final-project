@@ -29,6 +29,10 @@ if any(sel_idx) && num_select ~= train_n
             new_sel_idx = pureCluster(sel_idx, num_select, classifier);
         case 'mixedCluster'
             new_sel_idx = mixedCluster(sel_idx, num_select, classifier);            
+        case 'pureEnsemble'
+            new_sel_idx = pureEnsemble(sel_idx, num_select);
+        case 'mixedEnsemble'
+            new_sel_idx = mixedEnsemble(sel_idx, num_select);                   
         case 'random'
             new_sel_idx = RAND(sel_idx, num_select);
         case 'vote_entropy'

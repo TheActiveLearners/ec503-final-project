@@ -1,25 +1,25 @@
-function [ sel_idx ] = pureCluster(sel_idx, num_to_select, classifier)
-% Uncertainty Sampling
+function [ sel_idx ] = pureEnsemble(sel_idx, num_to_select)
+% Pure Ensemble 
 % Takes test data X and returns a single data point
 %
-% Syntax:  [ sel_idx ] = pureCluster(X, Y, num_to_select, classifier);
+% Syntax:  [ sel_idx ] = pureEnsemble(sel_idx, num_to_select)
 % Inputs:
 %    X - X data: num_samples by num_features
 %    Y - Y labels: num_samples by 1
 %    num_select - number of data points to train on X: scalar
 %
 % Outputs:
-%    sel_idx - logical array of selected indicies: num_sample x 1
+%    new_sel_idx - logical array of selected indicies: num_sample x 1
 %------------- BEGIN CODE --------------
 
+global TRAIN_X;
+
 % Get only those rows from X and Y
-trained_X = X(sel_idx,:);
-trained_Y = Y(sel_idx,:);
-untrained_X = X(~sel_idx,:);
+untrained_X = TRAIN_X(~sel_idx,:);
 % untrained_Y = Y(~sel_idx); % Should not be using untrained_Y
 
 
-sorted_indicies = getSortedCluster(sel_idx, classifier);
+sorted_indicies = getSortedEnsemble(sel_idx);
 % Match the global all_indicies to the trained_indicies to the 
 [untrain_n, ~] = size(untrained_X);
 % [all_indicies, trained_indicies] 
@@ -49,9 +49,4 @@ if sum(sel_idx) ~= num_to_select
 end
 
 end
-
-
-
-
-
 

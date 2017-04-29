@@ -49,14 +49,16 @@ scale = scales{select_scale}
 strategies = {'vote_entropy', 'qbc',...
               'pureUS', 'mixedUS',....
               'pureCluster', 'mixedCluster',...
-              'ensemble', 'random'};
+              'pureEnsemble', 'pureEnsemble',...
+              'random' };
 
 % Strategy Selection
 % select_strat = input('Which strategy (1) Vote (2) QBC (3) Uncertainty Sampling (4) Random ?  ');
-select_strat = 4;
+select_strat = 7;
 strategy = strategies{select_strat}
 
-
+% Select number of trials
+trials = 5;
 
 %% DATA PROCESSING
 % Format the data based on selections above
@@ -116,7 +118,7 @@ sample_steps = setScale(scale, train_n, seed, increment, max_sample);
 
 [ cl1_results_random, cl2_results_random,...
     cl1_results_strat, cl2_results_strat ] =...
-    trainAndTest('random', strategy, sample_steps);
+    trainAndTest('random', strategy, sample_steps, trials);
 
 
 

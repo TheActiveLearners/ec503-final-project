@@ -1,5 +1,5 @@
 function [ cl1_results_st1, cl2_results_st1,...
-    cl1_results_st2, cl2_results_st2 ] = trainAndTest(st1, st2, sample_steps)
+    cl1_results_st2, cl2_results_st2 ] = trainAndTest(st1, st2, sample_steps, trials)
 % trainAndTest
 % Runs train and test depending on the strategy
 %
@@ -22,9 +22,6 @@ function [ cl1_results_st1, cl2_results_st1,...
 %------------- BEGIN CODE --------------
 
 global TRAIN_X;
-
-% Set the max number of trials -- must be greater than 1
-trials = 15;
 
 % Data set sizes - n: samples, d: features
 [train_n,~] = size(TRAIN_X);
