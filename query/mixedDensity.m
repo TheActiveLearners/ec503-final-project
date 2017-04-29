@@ -1,5 +1,5 @@
-function [ sel_idx ] = mixedEnsemble(sel_idx, num_to_select)
-% Mixed - Uncertainty Sampling
+function [ sel_idx ] = mixedDensity(sel_idx, num_to_select)
+% Mixed Density
 % Takes test data X and returns a single data point
 %
 % Syntax:  [ sel_idx ] = UC(X, Y, sel_idx);
@@ -19,8 +19,9 @@ untrained_X = TRAIN_X(~sel_idx,:);
 % untrained_Y = Y(~sel_idx); % Should not be using untrained_Y
 
 orig_selected = sum(sel_idx);
+sorted_indicies = getSortedDensity(sel_idx);
 
-sorted_indicies = getSortedEnsemble(sel_idx);
+
 % Match the global all_indicies to the trained_indicies to the
 [untrain_n, ~] = size(untrained_X);
 % [all_indicies, trained_indicies]
@@ -41,12 +42,11 @@ for k = sorted_indicies'
             break;
         end
     end
+    
 end
-
 
 % RANDOM SAMPLE HALF
 sel_idx = RAND(sel_idx,num_to_select);
-
 
 % ERROR CHECKING
 if sum(sel_idx) ~= num_to_select

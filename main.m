@@ -20,12 +20,12 @@ addpath(dir_data, dir_results, dir_classifier, dir_query, dir_helper);
 
 % DATA SETS
 datasets = {
-    {'alex', 'alex.data', 'alex.label'},... % 1
-    {'ibn_sina', 'ibn_sina.data','ibn_sina.label'},... % 2
-    {'spambase', 'spambase.data','spambase.label'},... % 3
-    {'linSep', 'linSep_data.mat','linSep_label.mat'},... % 4
-    {'nonLinSep','nonLinSep_data.mat','nonLinSep_label.mat'},... % 5
-    {'nonLinSep2','nonLinSep_data2.mat','nonLinSep_label2.mat'} % 6
+    {'alex', 'alex.data', 'alex.label', 8},... % 1
+    {'ibn_sina', 'ibn_sina.data','ibn_sina.label', 32},... % 2
+    {'spambase', 'spambase.data','spambase.label', 16},... % 3
+    {'linSep', 'linSep_data.mat','linSep_label.mat', 4},... % 4
+    {'nonLinSep','nonLinSep_data.mat','nonLinSep_label.mat', 4},... % 5
+    {'nonLinSep2','nonLinSep_data2.mat','nonLinSep_label2.mat', 4} % 6
     };
 
 % MAKE SELECTION HERE
@@ -43,18 +43,23 @@ scales = {'log', 'linear'};
 % select_strat = input('Which scale (1) log (2) linear ?  ');
 select_scale = 1;
 scale = scales{select_scale}
+seed = datasets{select_dataset}{4}; % used for both linear and log
+increment = 4; % used for linear only
+max_sample = 100; % used for linear only
 
 
 % QUERY STRATEGIES
-strategies = {'pureUS', 'mixedUS',....
-              'pureCluster', 'mixedCluster',...
-              'pureEnsemble', 'mixedEnsemble',...
+strategies = {...
+              'pureUS', 'mixedUS',....
+              'pureQBC', 'mixedQBC',...
               'pureDensity', 'mixedDensity',...
-              'random' };
+              'pureEnsemble','mixedEnsemble',...
+              'random'...
+              };
 
 % Strategy Selection
 % select_strat = input('Which strategy (1) Vote (2) QBC (3) Uncertainty Sampling (4) Random ?  ');
-select_strat = 5;
+select_strat = 7;
 strategy = strategies{select_strat}
 
 % Select number of trials
@@ -106,11 +111,6 @@ TEST_Y  = all_labels(test(cv,2),:);
 [train_n,train_d] = size(TRAIN_X);
 [test_n,test_d] = size(TEST_X);
 
-% Set the Scale for the tests
-% set seed = 1/misclassication error ~ 8
-seed = 8; % used for both linear and log
-increment = 4; % used for linear only
-max_sample = 100; % used for linear only
 sample_steps = setScale(scale, train_n, seed, increment, max_sample);
 
 % Load Random query data
