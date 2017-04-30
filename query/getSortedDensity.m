@@ -9,27 +9,27 @@ global TRAIN_X TRAIN_Y;
 trained_X = TRAIN_X(sel_idx,:);
 trained_Y = TRAIN_Y(sel_idx,:);
 untrained_X = TRAIN_X(~sel_idx,:);
-
+[untrain_n, untrain_m] = size(untrained_X);
 % Clustering Kmeans
-% unique_untrained_X = setdiff(untrained_X, trained_X, 'rows');
-% [u_n, u_t] = size(unique_untrained_X);
-% [idx,C,sumd,D] = kmeans(untrained_X,u_n);
-% [foo, bar] = sort(sumD, 'ascend');
+% D = pdist(untrained_X, 'squaredeuclidean');
+% D = squareform( pdist(I') );       %'# euclidean distance between columns of I
+% M = exp(-(1/10) * D);
 
 
-% Uncertainty Sampling for QDA
 % Train a NB on only trained data
-% trained_Y = repmat(trained_Y,2,1);
-% trained_X = repmat(trained_X,2,1);
-% qda_mdl = fitcdiscr(trained_X, trained_Y, 'DiscrimType', 'pseudoQuadratic');
-% % Get Posterior distribution for each untrained X
-% [label,post_dist, cost] = predict(qda_mdl,untrained_X);
-% % 1st column - positive class posterior probabilities
-% cl_1_post = post_dist(:,1);
-% cl_1_uncertain = abs(0.5 - cl_1_post);
-% [all_dist, trained_indicies] = sort(cl_1_uncertain, 'ascend');
+svm_mdl = fitcsvm(trained_X,trained_Y,'Standardize',true,'KernelFunction','RBF',...
+                'KernelScale','auto');
+% Get Posterior distribution for each untrained X
+[~,dist_to_decision] = predict(svm_mdl,untrained_X);
+% 1st column - positive class posterior probabilities
+cl_1_dist = dist_to_decision(:,1);
+cl_1_uncertain = abs(cl_1_dist).^-1;
 
+sigma = 0.8;
+D = squareform( pdist(untrained_X) );       %'# euclidean distance between columns of I
+S = exp(-(1/(2 * sigma^2)) * D);              %# similarity matrix between columns of I
+phi_X = (1/untrain_n)*sum(S,2);
 
-
+[all_dist, trained_indicies] = sort(cl_1_uncertain.*phi_X, 'ascend');
 end
 

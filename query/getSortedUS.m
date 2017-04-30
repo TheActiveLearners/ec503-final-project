@@ -16,11 +16,11 @@ switch classifier
         dt_mdl = fitctree(trained_X, trained_Y);
 
         % Get Posterior distribution for each untrained X
-        [~,post_dist,~,~] = predict(dt_mdl,untrained_X);
+        [~,dist_to_hyp,~,~] = predict(dt_mdl,untrained_X);
 
         % 1st column - positive class posterior probabilities
-        cl_1_post = post_dist(:,1);
-        cl_1_uncertain = abs(0.5 - cl_1_post);
+        cl_1_dist = dist_to_hyp(:,1);
+        cl_1_uncertain = abs(0.5 - cl_1_dist);
         [all_dist, trained_indicies] = sort(cl_1_uncertain, 'ascend');
         
     case 'nb'
@@ -28,10 +28,10 @@ switch classifier
         % Train a NB on only trained data
         nb_mdl = fitcnb(trained_X, trained_Y,'Distribution','kernel');
         % Get Posterior distribution for each untrained X
-        [~,post_dist,~] = predict(nb_mdl,untrained_X);
+        [~,dist_to_hyp,~] = predict(nb_mdl,untrained_X);
         % 1st column - positive class posterior probabilities
-        cl_1_post = post_dist(:,1);
-        cl_1_uncertain = abs(0.5 - cl_1_post);
+        cl_1_dist = dist_to_hyp(:,1);
+        cl_1_uncertain = abs(0.5 - cl_1_dist);
         [all_dist, trained_indicies] = sort(cl_1_uncertain, 'ascend');
         
     case 'svm'
@@ -40,10 +40,10 @@ switch classifier
         svm_mdl = fitcsvm(trained_X,trained_Y,'Standardize',true,'KernelFunction','RBF',...
                         'KernelScale','auto');
         % Get Posterior distribution for each untrained X
-        [~,post_dist] = predict(svm_mdl,untrained_X);
+        [~,dist_to_hyp] = predict(svm_mdl,untrained_X);
         % 1st column - positive class posterior probabilities
-        cl_1_post = post_dist(:,1);
-        cl_1_uncertain = abs(0.5 - cl_1_post);
+        cl_1_dist = dist_to_hyp(:,1);
+        cl_1_uncertain = abs(cl_1_dist);
         [all_dist, trained_indicies] = sort(cl_1_uncertain, 'ascend');
     case 'qda'
         % Uncertainty Sampling for QDA
@@ -52,10 +52,10 @@ switch classifier
         trained_X = repmat(trained_X,2,1);
         qda_mdl = fitcdiscr(trained_X, trained_Y, 'DiscrimType', 'pseudoQuadratic');
         % Get Posterior distribution for each untrained X
-        [~,post_dist] = predict(qda_mdl,untrained_X);
+        [~,dist_to_hyp] = predict(qda_mdl,untrained_X);
         % 1st column - positive class posterior probabilities
-        cl_1_post = post_dist(:,1);
-        cl_1_uncertain = abs(0.5 - cl_1_post);
+        cl_1_dist = dist_to_hyp(:,1);
+        cl_1_uncertain = abs(0.5 - cl_1_dist);
         [all_dist, trained_indicies] = sort(cl_1_uncertain, 'ascend');        
         
     otherwise
