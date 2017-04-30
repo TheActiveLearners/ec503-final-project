@@ -18,23 +18,23 @@ dir_query      = './query';
 dir_helper     = './helpers';
 addpath(dir_data, dir_results, dir_classifier, dir_query, dir_helper);
 
-% MODELS
-models = {
-    {'alex', 'alex.data', 'alex.label'},...
-    {'ibn_sina', 'ibn_sina.data','ibn_sina.label'},...
-    {'spambase', 'spambase.data','spambase.label'},...
-    {'linSep', 'linSep_data.mat','linSep_label.mat'},...
-    {'nonLinSep','nonLinSep_data.mat','nonLinSep_label.mat'},...
-    {'nonLinSep2','nonLinSep_data2.mat','nonLinSep_label2.mat'}
+% DATA SETS
+datasets = {
+    {'alex', 'alex.data', 'alex.label', 8},... % 1
+    {'ibn_sina', 'ibn_sina.data','ibn_sina.label', 32},... % 2
+    {'spambase', 'spambase.data','spambase.label', 16},... % 3
+    {'linSep', 'linSep_data.mat','linSep_label.mat', 4},... % 4
+    {'nonLinSep','nonLinSep_data.mat','nonLinSep_label.mat', 4},... % 5
+    {'nonLinSep2','nonLinSep_data2.mat','nonLinSep_label2.mat', 4} % 6
     };
 
 % MAKE SELECTION HERE
 % Model Selection
 % select_mdl = input('Which dataset (1) ALEX (2) IBN_SINA ?  ');
-select_mdl = 1;
-model_name = models{select_mdl}{1}
-model_data  = models{select_mdl}{2};
-model_label  = models{select_mdl}{3};
+select_dataset = 1;
+dataset_name = datasets{select_dataset}{1}
+dataset_data  = datasets{select_dataset}{2};
+dataset_label  = datasets{select_dataset}{3};
 
 % SCALE
 scales = {'log', 'linear'};
@@ -43,28 +43,35 @@ scales = {'log', 'linear'};
 % select_strat = input('Which scale (1) log (2) linear ?  ');
 select_scale = 1;
 scale = scales{select_scale}
+seed = datasets{select_dataset}{4}; % used for both linear and log
+increment = 4; % used for linear only
+max_sample = 100; % used for linear only
 
 
 % QUERY STRATEGIES
-strategies = {'vote_entropy', 'qbc',...
+strategies = {...
               'pureUS', 'mixedUS',....
-              'pureCluster', 'mixedCluster',...
-              'ensemble', 'random'};
+              'pureQBC', 'mixedQBC',...
+              'pureDensity', 'mixedDensity',...
+              'pureEnsemble','mixedEnsemble',...
+              'random'...
+              };
 
 % Strategy Selection
 % select_strat = input('Which strategy (1) Vote (2) QBC (3) Uncertainty Sampling (4) Random ?  ');
-select_strat = 4;
+select_strat = 7;
 strategy = strategies{select_strat}
 
-
+% Select number of trials
+trials = 5;
 
 %% DATA PROCESSING
 % Format the data based on selections above
 
-fname = fullfile(dir_data,model_data);
+fname = fullfile(dir_data,dataset_data);
 all_data = load(fname);
 if(class(all_data) == 'struct')
-    switch select_mdl
+    switch select_dataset
         case 5
             all_data = all_data.X_nonLinSep;
         case 4
@@ -74,10 +81,10 @@ if(class(all_data) == 'struct')
     end
 end
 [sample_steps,~] = size(all_data);
-fname = fullfile(dir_data,model_label);
+fname = fullfile(dir_data,dataset_label);
 all_labels = load(fname);
 if(class(all_labels) == 'struct')
-    switch select_mdl
+    switch select_dataset
         case 5
             all_labels = all_labels.Y_nonLinSep;
         case 4
@@ -104,11 +111,6 @@ TEST_Y  = all_labels(test(cv,2),:);
 [train_n,train_d] = size(TRAIN_X);
 [test_n,test_d] = size(TEST_X);
 
-% Set the Scale for the tests
-% set seed = 1/misclassication error ~ 8
-seed = 8; % used for both linear and log
-increment = 4; % used for linear only
-max_sample = 100; % used for linear only
 sample_steps = setScale(scale, train_n, seed, increment, max_sample);
 
 % Load Random query data
@@ -116,7 +118,7 @@ sample_steps = setScale(scale, train_n, seed, increment, max_sample);
 
 [ cl1_results_random, cl2_results_random,...
     cl1_results_strat, cl2_results_strat ] =...
-    trainAndTest('random', strategy, sample_steps);
+    trainAndTest('random', strategy, sample_steps, trials);
 
 
 
@@ -126,8 +128,8 @@ y = horzcat(cl1_results_random', cl2_results_random',...
             cl1_results_strat', cl2_results_strat');
 
 
-legend = {'dt_{random}', 'nb_{random}',...
-           strcat('dt_{',strategy,'}'), strcat('nb_{',strategy,'}')};
+legend = {'qda_{random}', 'svm_{random}',...
+           strcat('qda_{',strategy,'}'), strcat('svm_{',strategy,'}')};
 
 if strcmp(scale, 'log')
     logCCRPlot(x,'Training Size',...
