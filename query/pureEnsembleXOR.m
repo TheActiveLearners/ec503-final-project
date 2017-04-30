@@ -1,8 +1,8 @@
-function [ sel_idx ] = mixedEnsemble(sel_idx, num_to_select)
-% Mixed - Uncertainty Sampling
+function [ sel_idx ] = pureEnsembleXOR(sel_idx, num_to_select)
+% Pure Ensemble 
 % Takes test data X and returns a single data point
 %
-% Syntax:  [ sel_idx ] = UC(X, Y, sel_idx);
+% Syntax:  [ sel_idx ] = pureEnsemble(sel_idx, num_to_select)
 % Inputs:
 %    X - X data: num_samples by num_features
 %    Y - Y labels: num_samples by 1
@@ -18,35 +18,30 @@ global TRAIN_X;
 untrained_X = TRAIN_X(~sel_idx,:);
 % untrained_Y = Y(~sel_idx); % Should not be using untrained_Y
 
-orig_selected = sum(sel_idx);
 
-sorted_indicies = getSortedEnsemble(sel_idx);
-% Match the global all_indicies to the trained_indicies to the
+sorted_indicies = getSortedEnsembleXOR(sel_idx);
+% Match the global all_indicies to the trained_indicies to the 
 [untrain_n, ~] = size(untrained_X);
-% [all_indicies, trained_indicies]
+% [all_indicies, trained_indicies] 
 untrained_indicies = horzcat(find(~sel_idx), (1:untrain_n)');
 
 % for each of the remaining untrained indicies
 for k = sorted_indicies'
-    % find the matching index from all the indicies
+    % find the matching index from all the indicies     
     idx_tuple = untrained_indicies(untrained_indicies(:,2) == k,:);
-    % isolate only the "global" index
+    % isolate only the "global" index     
     global_idx = idx_tuple(1);
     % if this index hasn't been selected already
     if ~sel_idx(global_idx)
-        % select it
+        % select it         
         sel_idx(global_idx) = 1;
-        % if reached the target number to select, break early
-        if sum(sel_idx) == num_to_select - floor((num_to_select - orig_selected)/2)
+        % if reached the target number to select, break early         
+        if sum(sel_idx) == num_to_select
             break;
         end
     end
+    
 end
-
-
-% RANDOM SAMPLE HALF
-sel_idx = RAND(sel_idx,num_to_select);
-
 
 % ERROR CHECKING
 if sum(sel_idx) ~= num_to_select
