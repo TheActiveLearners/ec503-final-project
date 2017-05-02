@@ -9,7 +9,7 @@ global TRAIN_X TRAIN_Y;
 trained_X = TRAIN_X(sel_idx,:);
 trained_Y = TRAIN_Y(sel_idx,:);
 untrained_X = TRAIN_X(~sel_idx,:);
-[untrain_n, untrain_m] = size(untrained_X);
+[untrain_n, ~] = size(untrained_X);
 % Clustering Kmeans
 % D = pdist(untrained_X, 'squaredeuclidean');
 % D = squareform( pdist(I') );       %'# euclidean distance between columns of I

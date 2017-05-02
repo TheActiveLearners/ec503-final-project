@@ -12,11 +12,9 @@ function [ sel_idx ] = pureUS(sel_idx, num_to_select, classifier)
 %    new_sel_idx - logical array of selected indicies: num_sample x 1
 %------------- BEGIN CODE --------------
 
-global TRAIN_X TRAIN_Y;
+global TRAIN_X;
 
 % Get only those rows from X and Y
-trained_X = TRAIN_X(sel_idx,:);
-trained_Y = TRAIN_Y(sel_idx,:);
 untrained_X = TRAIN_X(~sel_idx,:);
 % untrained_Y = Y(~sel_idx); % Should not be using untrained_Y
 

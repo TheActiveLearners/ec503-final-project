@@ -14,44 +14,23 @@ function [ sel_idx ] = mixedUS(sel_idx, num_to_select, classifier)
 
 global TRAIN_X;
 
+% RANDOM SAMPLE
+random_fraction = 1 - num_to_select/length(TRAIN_X);
+sel_idx = RAND(sel_idx, floor(num_to_select * random_fraction));
+
 % Get only those rows from X and Y
 untrained_X = TRAIN_X(~sel_idx,:);
 % untrained_Y = Y(~sel_idx); % Should not be using untrained_Y
 
-orig_selected = sum(sel_idx);
-
+% UNCERTAINTY SAMPLING
 sorted_indicies_1 = getSortedUS(sel_idx, classifier);
-sorted_indicies_2 = getSortedDensity(sel_idx);
 % Match the global all_indicies to the trained_indicies to the 
 [untrain_n, ~] = size(untrained_X);
 % [all_indicies, trained_indicies] 
 untrained_indicies = horzcat(find(~sel_idx), (1:untrain_n)');
 
-
 % for each of the remaining untrained indicies
 for k = sorted_indicies_1'
-    % find the matching index from all the indicies     
-    idx_tuple = untrained_indicies(untrained_indicies(:,2) == k,:);
-    % isolate only the "global" index     
-    global_idx = idx_tuple(1);
-    % if this index hasn't been selected already
-    if ~sel_idx(global_idx)
-        % select it         
-        sel_idx(global_idx) = 1;
-        % select half by uncertainty, break early
-        if sum(sel_idx) == num_to_select - floor((num_to_select - orig_selected)/2)
-            break;
-        end
-    end
-end
-
-
-% RANDOM SAMPLE HALF
-% sel_idx = RAND(sel_idx,num_to_select);
-
-
-% for each of the remaining untrained indicies
-for k = sorted_indicies_2'
     % find the matching index from all the indicies     
     idx_tuple = untrained_indicies(untrained_indicies(:,2) == k,:);
     % isolate only the "global" index     
