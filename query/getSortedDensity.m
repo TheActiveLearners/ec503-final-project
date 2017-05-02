@@ -25,11 +25,11 @@ svm_mdl = fitcsvm(trained_X,trained_Y,'Standardize',true,'KernelFunction','RBF',
 cl_1_dist = dist_to_decision(:,1);
 cl_1_uncertain = abs(cl_1_dist).^-1;
 
-sigma = 0.8;
-D = squareform( pdist(untrained_X) );       %'# euclidean distance between columns of I
-S = exp(-(1/(2 * sigma^2)) * D);              %# similarity matrix between columns of I
-phi_X = (1/untrain_n)*sum(S,2);
-
+sigma = std(trained_X(:));
+D = squareform( pdist(untrained_X, 'squaredeuclidean') );       %'# euclidean distance between columns of I
+S = exp(-(D./(2 * sigma^2)));              %# similarity matrix between columns of I
+phi_X = ((1/untrain_n)*sum(S,2)).^3;
 [all_dist, trained_indicies] = sort(cl_1_uncertain.*phi_X, 'ascend');
+
 end
 

@@ -41,7 +41,7 @@ scales = {'log', 'linear'};
 
 % Scale Selection
 % select_strat = input('Which scale (1) log (2) linear ?  ');
-select_scale = 1;
+select_scale = 2;
 scale = scales{select_scale}
 seed = datasets{select_dataset}{4}; % used for both linear and log
 increment = 4; % used for linear only
@@ -59,11 +59,11 @@ strategies = {...
 
 % Strategy Selection
 % select_strat = input('Which strategy (1) Vote (2) QBC (3) Uncertainty Sampling (4) Random ?  ');
-select_strat = 1;
+select_strat = 3;
 strategy = strategies{select_strat}
 
 % Select number of trials
-trials = 5;
+trials = 3;
 
 %% DATA PROCESSING
 % Format the data based on selections above
