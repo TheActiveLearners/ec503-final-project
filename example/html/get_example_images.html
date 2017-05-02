@@ -1,0 +1,372 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>get_example_images</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-04-30"><meta name="DC.source" content="get_example_images.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#11">Get the hyperplane.</a></li><li><a href="#12">all data</a></li></ul></div><pre class="codeinput">caca;
+<span class="comment">% load data</span>
+use_data = 2;
+
+<span class="keyword">if</span> use_data == 1
+    load <span class="string">../data/nonLinSep_data.mat</span>
+    load <span class="string">../data/nonLinSep_label.mat</span>
+    X_data = X_nonLinSep;
+    Y_data = Y_nonLinSep;
+<span class="keyword">else</span>
+    load <span class="string">../data/nonLinSep_data2.mat</span>
+    load <span class="string">../data/nonLinSep_label2.mat</span>
+    X_data = X_nonLinSep2;
+    Y_data = Y_nonLinSep2;
+<span class="keyword">end</span>
+</pre><p>% Initialize gif figure(1) filename = 'activeLearn_test.gif';</p><p>Plot using gscatter to see groups</p><pre class="codeinput">gscatter(X_data(:,1), X_data(:,2),Y_data,[],<span class="string">'.'</span>,[])
+xlim([-6 8]);
+ylim([-4 6]);
+<span class="comment">% drawnow</span>
+<span class="comment">% frame = getframe(1);</span>
+<span class="comment">% im = frame2im(frame);</span>
+<span class="comment">% [imind, cm] = rgb2ind(im, 256);</span>
+<span class="comment">%</span>
+<span class="comment">% imwrite(imind,cm,filename,'gif', 'Loopcount',inf);</span>
+</pre><img vspace="5" hspace="5" src="get_example_images_01.png" style="width:560px;height:420px;" alt=""> <p>Plot in gray using scatter to show that we don't know the labels</p><pre class="codeinput">s = scatter(X_data(:,1), X_data(:,2),<span class="string">'.'</span>);
+s.MarkerEdgeColor = [0.5 0.5 0.5];
+s.MarkerFaceColor = [0.5,0.5,0.5];
+xlim([-6 8]);
+ylim([-4 6]);
+<span class="comment">% drawnow</span>
+<span class="comment">% frame = getframe(1);</span>
+<span class="comment">% im = frame2im(frame);</span>
+<span class="comment">% [imind, cm] = rgb2ind(im, 256);</span>
+<span class="comment">% imwrite(imind,cm,filename,'gif','WriteMode','append');</span>
+hold <span class="string">on</span>;
+</pre><img vspace="5" hspace="5" src="get_example_images_02.png" style="width:560px;height:420px;" alt=""> <p>Set up indexing</p><pre class="codeinput">index = zeros(2000,1);
+</pre><p>seed by taking random points to label</p><pre class="codeinput">rng(2);
+seed = randperm(length(index));
+index(seed(1:8)) = 1;
+X_seed = X_data(index==1,:);
+Y_seed = Y_data(index==1);
+</pre><pre class="codeinput">figure;
+s = scatter(X_data(:,1), X_data(:,2),<span class="string">'.'</span>);
+s.MarkerEdgeColor = [0.5 0.5 0.5];
+s.MarkerFaceColor = [0.5,0.5,0.5];
+xlim([-6 8]);
+ylim([-4 6]);
+hold <span class="string">on</span>;
+X_1 = X_seed(Y_seed == 1,:);
+X_neg1 = X_seed(Y_seed == -1,:);
+
+seed_plot1 = scatter(X_1(:,1), X_1(:,2));
+seed_plot1.MarkerEdgeColor = <span class="string">'c'</span>;
+seed_plot1.MarkerFaceColor = <span class="string">'c'</span>;
+xlim([-6 8]);
+ylim([-4 6]);
+hold <span class="string">on</span>;
+seed_plot0 = scatter(X_neg1(:,1), X_neg1(:,2));
+seed_plot0.MarkerEdgeColor = <span class="string">'r'</span>;
+seed_plot0.MarkerFaceColor = <span class="string">'r'</span>;
+xlim([-6 8]);
+ylim([-4 6]);
+svmMdl = fitcsvm(X_seed, Y_seed);
+hold <span class="string">on</span>;
+<span class="comment">% drawnow</span>
+<span class="comment">% frame = getframe(1);</span>
+<span class="comment">% im = frame2im(frame);</span>
+<span class="comment">% [imind, cm] = rgb2ind(im, 256);</span>
+<span class="comment">% imwrite(imind,cm,filename,'gif','WriteMode','append');</span>
+</pre><img vspace="5" hspace="5" src="get_example_images_03.png" style="width:560px;height:420px;" alt=""> <pre class="codeinput">hold <span class="string">on</span>;
+plot_svm_hyp(svmMdl, X_seed);
+<span class="comment">% drawnow</span>
+<span class="comment">% frame = getframe(1);</span>
+<span class="comment">% im = frame2im(frame);</span>
+<span class="comment">% [imind, cm] = rgb2ind(im, 256);</span>
+<span class="comment">% imwrite(imind,cm,filename,'gif','WriteMode','append');</span>
+</pre><img vspace="5" hspace="5" src="get_example_images_04.png" style="width:560px;height:420px;" alt=""> <p>Get new points to show that with more points you can get better results.</p><pre class="codeinput">index(seed(1:20)) = 1;
+</pre><pre class="codeinput">X_round2 = X_data(index==1,:);
+Y_round2 = Y_data(index==1);
+figure;
+s = scatter(X_data(:,1), X_data(:,2),<span class="string">'.'</span>);
+s.MarkerEdgeColor = [0.5 0.5 0.5];
+s.MarkerFaceColor = [0.5,0.5,0.5];
+xlim([-6 8]);
+ylim([-4 6]);
+hold <span class="string">on</span>;
+X_1 = X_round2(Y_round2 == 1,:);
+X_neg1 = X_round2(Y_round2 == -1,:);
+
+round2_plot1 = scatter(X_1(:,1), X_1(:,2));
+round2_plot1.MarkerEdgeColor = <span class="string">'c'</span>;
+round2_plot1.MarkerFaceColor = <span class="string">'c'</span>;
+xlim([-6 8]);
+ylim([-4 6]);
+hold <span class="string">on</span>;
+round2_plot0 = scatter(X_neg1(:,1), X_neg1(:,2));
+round2_plot0.MarkerEdgeColor = <span class="string">'r'</span>;
+round2_plot0.MarkerFaceColor = <span class="string">'r'</span>;
+xlim([-6 8]);
+ylim([-4 6]);
+</pre><img vspace="5" hspace="5" src="get_example_images_05.png" style="width:560px;height:420px;" alt=""> <h2 id="11">Get the hyperplane.</h2><pre class="codeinput">svmMdl = fitcsvm(X_round2, Y_round2);
+
+<span class="comment">% drawnow</span>
+<span class="comment">% frame = getframe(1);</span>
+<span class="comment">% im = frame2im(frame);</span>
+<span class="comment">% [imind, cm] = rgb2ind(im, 256);</span>
+<span class="comment">% imwrite(imind,cm,filename,'gif','WriteMode','append');</span>
+hold <span class="string">on</span>;
+plot_svm_hyp(svmMdl, X_round2);
+<span class="comment">% drawnow</span>
+<span class="comment">% frame = getframe(1);</span>
+<span class="comment">% im = frame2im(frame);</span>
+<span class="comment">% [imind, cm] = rgb2ind(im, 256);</span>
+<span class="comment">% imwrite(imind,cm,filename,'gif','WriteMode','append');</span>
+</pre><img vspace="5" hspace="5" src="get_example_images_06.png" style="width:560px;height:420px;" alt=""> <h2 id="12">all data</h2><pre class="codeinput">svmMdl = fitcsvm(X_data, Y_data);
+X_1 = X_data(Y_data == 1,:);
+X_neg1 = X_data(Y_data == -1,:);
+figure;
+round3_plot1 = scatter(X_1(:,1), X_1(:,2),<span class="string">'.'</span>);
+round3_plot1.MarkerEdgeColor = <span class="string">'c'</span>;
+round3_plot1.MarkerFaceColor = <span class="string">'c'</span>;
+xlim([-6 8]);
+ylim([-4 6]);
+hold <span class="string">on</span>;
+round3_plot0 = scatter(X_neg1(:,1), X_neg1(:,2),<span class="string">'.'</span>);
+round3_plot0.MarkerEdgeColor = <span class="string">'r'</span>;
+round3_plot0.MarkerFaceColor = <span class="string">'r'</span>;
+xlim([-6 8]);
+ylim([-4 6]);
+hold <span class="string">on</span>;
+</pre><img vspace="5" hspace="5" src="get_example_images_07.png" style="width:560px;height:420px;" alt=""> <pre class="codeinput">plot_svm_hyp(svmMdl, X_data);
+
+<span class="comment">% drawnow</span>
+<span class="comment">% frame = getframe(1);</span>
+<span class="comment">% im = frame2im(frame);</span>
+<span class="comment">% [imind, cm] = rgb2ind(im, 256);</span>
+<span class="comment">% imwrite(imind,cm,filename,'gif','WriteMode','append');</span>
+</pre><img vspace="5" hspace="5" src="get_example_images_08.png" style="width:560px;height:420px;" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%%
+caca;
+% load data
+use_data = 2;
+
+if use_data == 1
+    load ../data/nonLinSep_data.mat
+    load ../data/nonLinSep_label.mat
+    X_data = X_nonLinSep;
+    Y_data = Y_nonLinSep;
+else
+    load ../data/nonLinSep_data2.mat
+    load ../data/nonLinSep_label2.mat
+    X_data = X_nonLinSep2;
+    Y_data = Y_nonLinSep2;
+end
+%% 
+% % Initialize gif
+% figure(1)
+% filename = 'activeLearn_test.gif';
+%%
+% Plot using gscatter to see groups
+gscatter(X_data(:,1), X_data(:,2),Y_data,[],'.',[])
+xlim([-6 8]);
+ylim([-4 6]);
+% drawnow
+% frame = getframe(1);
+% im = frame2im(frame);
+% [imind, cm] = rgb2ind(im, 256);
+% 
+% imwrite(imind,cm,filename,'gif', 'Loopcount',inf);
+%%
+% Plot in gray using scatter to show that we don't know the labels
+s = scatter(X_data(:,1), X_data(:,2),'.');
+s.MarkerEdgeColor = [0.5 0.5 0.5];
+s.MarkerFaceColor = [0.5,0.5,0.5];
+xlim([-6 8]);
+ylim([-4 6]);
+% drawnow
+% frame = getframe(1);
+% im = frame2im(frame);
+% [imind, cm] = rgb2ind(im, 256);
+% imwrite(imind,cm,filename,'gif','WriteMode','append');
+hold on;
+%%
+% Set up indexing
+index = zeros(2000,1);
+%%
+% seed by taking random points to label
+rng(2);
+seed = randperm(length(index));
+index(seed(1:8)) = 1;
+X_seed = X_data(index==1,:);
+Y_seed = Y_data(index==1);
+
+%%
+figure;
+s = scatter(X_data(:,1), X_data(:,2),'.');
+s.MarkerEdgeColor = [0.5 0.5 0.5];
+s.MarkerFaceColor = [0.5,0.5,0.5];
+xlim([-6 8]);
+ylim([-4 6]);
+hold on;
+X_1 = X_seed(Y_seed == 1,:);
+X_neg1 = X_seed(Y_seed == -1,:);
+
+seed_plot1 = scatter(X_1(:,1), X_1(:,2));
+seed_plot1.MarkerEdgeColor = 'c';
+seed_plot1.MarkerFaceColor = 'c';
+xlim([-6 8]);
+ylim([-4 6]);
+hold on;
+seed_plot0 = scatter(X_neg1(:,1), X_neg1(:,2));
+seed_plot0.MarkerEdgeColor = 'r';
+seed_plot0.MarkerFaceColor = 'r';
+xlim([-6 8]);
+ylim([-4 6]);
+svmMdl = fitcsvm(X_seed, Y_seed);
+hold on;
+% drawnow
+% frame = getframe(1);
+% im = frame2im(frame);
+% [imind, cm] = rgb2ind(im, 256);
+% imwrite(imind,cm,filename,'gif','WriteMode','append');
+%%
+hold on;
+plot_svm_hyp(svmMdl, X_seed);
+% drawnow
+% frame = getframe(1);
+% im = frame2im(frame);
+% [imind, cm] = rgb2ind(im, 256);
+% imwrite(imind,cm,filename,'gif','WriteMode','append');
+
+%% 
+% Get new points to show that with more points you can get better results.
+index(seed(1:20)) = 1;
+%%
+X_round2 = X_data(index==1,:);
+Y_round2 = Y_data(index==1);
+figure;
+s = scatter(X_data(:,1), X_data(:,2),'.');
+s.MarkerEdgeColor = [0.5 0.5 0.5];
+s.MarkerFaceColor = [0.5,0.5,0.5];
+xlim([-6 8]);
+ylim([-4 6]);
+hold on;
+X_1 = X_round2(Y_round2 == 1,:);
+X_neg1 = X_round2(Y_round2 == -1,:);
+
+round2_plot1 = scatter(X_1(:,1), X_1(:,2));
+round2_plot1.MarkerEdgeColor = 'c';
+round2_plot1.MarkerFaceColor = 'c';
+xlim([-6 8]);
+ylim([-4 6]);
+hold on;
+round2_plot0 = scatter(X_neg1(:,1), X_neg1(:,2));
+round2_plot0.MarkerEdgeColor = 'r';
+round2_plot0.MarkerFaceColor = 'r';
+xlim([-6 8]);
+ylim([-4 6]);
+%% Get the hyperplane.
+svmMdl = fitcsvm(X_round2, Y_round2);
+
+% drawnow
+% frame = getframe(1);
+% im = frame2im(frame);
+% [imind, cm] = rgb2ind(im, 256);
+% imwrite(imind,cm,filename,'gif','WriteMode','append');
+hold on;
+plot_svm_hyp(svmMdl, X_round2);
+% drawnow
+% frame = getframe(1);
+% im = frame2im(frame);
+% [imind, cm] = rgb2ind(im, 256);
+% imwrite(imind,cm,filename,'gif','WriteMode','append');
+
+%% all data
+svmMdl = fitcsvm(X_data, Y_data);
+X_1 = X_data(Y_data == 1,:);
+X_neg1 = X_data(Y_data == -1,:);
+figure;
+round3_plot1 = scatter(X_1(:,1), X_1(:,2),'.');
+round3_plot1.MarkerEdgeColor = 'c';
+round3_plot1.MarkerFaceColor = 'c';
+xlim([-6 8]);
+ylim([-4 6]);
+hold on;
+round3_plot0 = scatter(X_neg1(:,1), X_neg1(:,2),'.');
+round3_plot0.MarkerEdgeColor = 'r';
+round3_plot0.MarkerFaceColor = 'r';
+xlim([-6 8]);
+ylim([-4 6]);
+hold on;
+%%
+plot_svm_hyp(svmMdl, X_data);
+
+% drawnow
+% frame = getframe(1);
+% im = frame2im(frame);
+% [imind, cm] = rgb2ind(im, 256);
+% imwrite(imind,cm,filename,'gif','WriteMode','append');
+
+
+##### SOURCE END #####
+--></body></html>
