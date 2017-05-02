@@ -33,7 +33,6 @@ cl2_temp_results_st1 = zeros(trials, length(sample_steps));
 cl1_temp_results_st2 = zeros(trials, length(sample_steps));
 cl2_temp_results_st2 = zeros(trials, length(sample_steps));
 
-
 % For each trial
 for t = 1:trials
     t

@@ -29,10 +29,14 @@ if any(sel_idx) && num_select ~= train_n
             new_sel_idx = pureDensity(sel_idx, num_select);
         case 'mixedDensity'
             new_sel_idx = mixedCluster(sel_idx, num_select);            
-        case 'pureEnsemble'
-            new_sel_idx = pureEnsemble(sel_idx, num_select);
-        case 'mixedEnsemble'
-            new_sel_idx = mixedEnsemble(sel_idx, num_select);                   
+        case 'pureEnsembleXOR'
+            new_sel_idx = pureEnsembleXOR(sel_idx, num_select);
+        case 'mixedEnsembleXOR'
+            new_sel_idx = mixedEnsembleXOR(sel_idx, num_select);
+        case 'pureEnsembleVE'
+            new_sel_idx = pureEnsembleVE(sel_idx, num_select);
+        case 'mixedEnsembleVE'
+            new_sel_idx = mixedEnsembleVE(sel_idx, num_select);                               
         case 'random'
             new_sel_idx = RAND(sel_idx, num_select);
         otherwise

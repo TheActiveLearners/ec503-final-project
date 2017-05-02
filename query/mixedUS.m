@@ -20,7 +20,8 @@ untrained_X = TRAIN_X(~sel_idx,:);
 
 orig_selected = sum(sel_idx);
 
-sorted_indicies = getSortedUS(sel_idx, classifier);
+sorted_indicies_1 = getSortedUS(sel_idx, classifier);
+sorted_indicies_2 = getSortedDensity(sel_idx);
 % Match the global all_indicies to the trained_indicies to the 
 [untrain_n, ~] = size(untrained_X);
 % [all_indicies, trained_indicies] 
@@ -28,7 +29,7 @@ untrained_indicies = horzcat(find(~sel_idx), (1:untrain_n)');
 
 
 % for each of the remaining untrained indicies
-for k = sorted_indicies'
+for k = sorted_indicies_1'
     % find the matching index from all the indicies     
     idx_tuple = untrained_indicies(untrained_indicies(:,2) == k,:);
     % isolate only the "global" index     
@@ -42,12 +43,29 @@ for k = sorted_indicies'
             break;
         end
     end
-    
 end
 
 
 % RANDOM SAMPLE HALF
-sel_idx = RAND(sel_idx,num_to_select);
+% sel_idx = RAND(sel_idx,num_to_select);
+
+
+% for each of the remaining untrained indicies
+for k = sorted_indicies_2'
+    % find the matching index from all the indicies     
+    idx_tuple = untrained_indicies(untrained_indicies(:,2) == k,:);
+    % isolate only the "global" index     
+    global_idx = idx_tuple(1);
+    % if this index hasn't been selected already
+    if ~sel_idx(global_idx)
+        % select it         
+        sel_idx(global_idx) = 1;
+        % select half by uncertainty, break early
+        if sum(sel_idx) == num_to_select
+            break;
+        end
+    end
+end
 
 
 % ERROR CHECKING
