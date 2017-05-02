@@ -15,5 +15,5 @@ a = -w1/w2;
 b = -bias/w2;
 X = -6:.1:8;
 Y = a*X + b;
-plot(X,Y);
+plot(X,Y, 'LineWidth', 3, 'Color',[103/255 54/255 188/255]);
 end
