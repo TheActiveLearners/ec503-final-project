@@ -30,7 +30,7 @@ datasets = {
 % MAKE SELECTION HERE
 % Model Selection
 % select_mdl = input('Which dataset (1) ALEX (2) IBN_SINA ?  ');
-select_dataset = 1;
+select_dataset = 3;
 dataset_name = datasets{select_dataset}{1}
 dataset_data  = datasets{select_dataset}{2};
 dataset_label  = datasets{select_dataset}{3};
@@ -56,11 +56,11 @@ strategies = {...
 % Strategy Selection
 % select_strat = input('Which strategy (1) Vote (2) QBC (3) Uncertainty Sampling (4) Random ?  ');
 select_strat_1 = 9;
-select_strat_2 = 1;
+select_strat_2 = 3;
 strategy = {strategies{select_strat_1},strategies{select_strat_2}}
 
 % Select number of trials
-trials = 1;
+trials = 25;
 
 %% DATA PROCESSING
 % Format the data based on selections above
@@ -97,41 +97,25 @@ max_sample = 100; % used for linear only
 sample_steps = setScale(scale, train_n, seed, increment, max_sample);
 
 tic
-[ cl1_results_strat_1, cl2_results_strat_1,...
-    cl1_results_strat_2, cl2_results_strat_2 ] =...
-    trainAndTest(strategy{1}, strategy{2}, sample_steps, trials);
+[ results ] = trainAndTest(strategy{1}, strategy{2}, sample_steps, trials);
 toc
+
+save(strcat(dataset_name, '_',strategy{1},'_',strategy{2}, '_',...
+     scale, '_', num2str(trials)), 'results')
 
 %% PLOT
 x = sample_steps;
-y = horzcat(cl1_results_strat_1', cl2_results_strat_1',...
-            cl1_results_strat_2', cl2_results_strat_2');
+y = results;
 
-save(strcat(dataset_name, '_',strategy{1},'_',strategy{2}, '_',...
-     scale, '_', num2str(trials)), 'y')
 legend = {...
           strcat('qda_{',strategy{1},'}'), strcat('svm_{',strategy{1},'}'),...
           strcat('qda_{',strategy{2},'}'), strcat('svm_{',strategy{2},'}')...
          };
 
 if strcmp(scale, 'log')
-    logCCRPlot(x,'Training Size',...
-        y,'CCR',...
-        legend,...
-        'Plot of CCR for training size between 1 to max training size');
-    
-    logAUCPlot(x,'Training Size',...
-        y,'AUC',...
-        legend,...
-        'Plot of AUC for training size between 1 to max training size');
+    logCCRPlot(x, y, legend);
+    logAUCPlot(x, y, legend);
 else
-    linearCCRPlot(x,'Training Size',...
-        y,'CCR',...
-        legend,...
-        'Plot of CCR for training size between 1 to max training size');
-    
-    linearAUCPlot(x,'Training Size',...
-        y,'AUC',...
-        legend,...
-        'Plot of AUC for training size between 1 to max training size');    
+    linearCCRPlot(x, y, legend);
+    linearAUCPlot(x, y, legend);   
 end

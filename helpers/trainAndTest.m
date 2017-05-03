@@ -1,5 +1,4 @@
-function [ cl1_results_st1, cl2_results_st1,...
-    cl1_results_st2, cl2_results_st2 ] = trainAndTest(st1, st2, sample_steps, trials)
+function [ final_results ] = trainAndTest(st1, st2, sample_steps, trials)
 % trainAndTest
 % Runs train and test depending on the strategy
 %
@@ -27,11 +26,11 @@ global TRAIN_X;
 [train_n,~] = size(TRAIN_X);
 
 % Initialize temporary array to hold results
-cl1_temp_results_st1 = zeros(trials, length(sample_steps));
-cl2_temp_results_st1 = zeros(trials, length(sample_steps));
+final_results.cl1_results_st1 = zeros(trials, length(sample_steps));
+final_results.cl2_results_st1 = zeros(trials, length(sample_steps));
 
-cl1_temp_results_st2 = zeros(trials, length(sample_steps));
-cl2_temp_results_st2 = zeros(trials, length(sample_steps));
+final_results.cl1_results_st2 = zeros(trials, length(sample_steps));
+final_results.cl2_results_st2 = zeros(trials, length(sample_steps));
 
 % For each trial
 for t = 1:trials
@@ -70,30 +69,15 @@ for t = 1:trials
         cl2_mdl_st2  = SVM_train(cl2_sel_idx_st2);
         
         % TEST
-        cl1_temp_results_st1(t,i) = QDA_test(cl1_mdl_st1);
-        cl2_temp_results_st1(t,i) = SVM_test(cl2_mdl_st1);
+        final_results.cl1_results_st1(t,i) = QDA_test(cl1_mdl_st1);
+        final_results.cl2_results_st1(t,i) = SVM_test(cl2_mdl_st1);
         
-        cl1_temp_results_st2(t,i) = QDA_test(cl1_mdl_st2);
-        cl2_temp_results_st2(t,i) = SVM_test(cl2_mdl_st2);
+        final_results.cl1_results_st2(t,i) = QDA_test(cl1_mdl_st2);
+        final_results.cl2_results_st2(t,i) = SVM_test(cl2_mdl_st2);
         
     end % END FOR - training loop
     
 end % END FOR - trial loops
-
-if trials > 1
-    cl1_results_st1 = mean(cl1_temp_results_st1);
-    cl2_results_st1 = mean(cl2_temp_results_st1);
-    
-    cl1_results_st2 = mean(cl1_temp_results_st2);
-    cl2_results_st2 = mean(cl2_temp_results_st2);
-else
-    cl1_results_st1 = cl1_temp_results_st1;
-    cl2_results_st1 = cl2_temp_results_st1;
-    
-    cl1_results_st2 = cl1_temp_results_st2;
-    cl2_results_st2 = cl2_temp_results_st2;
-end
-
 
 end % END FUNCTION
 

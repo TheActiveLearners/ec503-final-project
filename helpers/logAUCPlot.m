@@ -1,4 +1,4 @@
-function [ ] = logAUCPlot( x, x_label, y, y_label, in_legend, in_title )
+function [ ] = logAUCPlot( x, y_s, in_legend)
 % aucPlot
 % Plots
 %
@@ -21,13 +21,16 @@ function [ ] = logAUCPlot( x, x_label, y, y_label, in_legend, in_title )
 figure
 hold on;
 grid on;
-[y_p, y_s] = size(y);
-y_i = zeros(y_p,1);
-for i = 1:y_s
-    raw_y = y(:,i);
-    y_i(1) = raw_y(1);
-    for p = 2:length(raw_y)
-        y_i(p) = trapz(x(1:p),raw_y(1:p))/trapz(x(1:p), ones(p,1));
+
+strats = fieldnames(y_s);
+for i = 1:numel(strats)
+    y = y_s.(strats{i});
+    mean_y = mean(y,1);
+    [~,m] = size(mean_y);
+    y_i = zeros(m,1);
+    y_i(1) = mean_y(1);
+    for p = 2:length(mean_y)
+        y_i(p) = trapz(x(1:p),mean_y(1:p))/trapz(x(1:p), ones(p,1));
     end
     plot(log2(x), y_i) % plot on log2 x-scale
 end
@@ -36,13 +39,13 @@ xt = get(gca, 'XTick');
 yl = get(gca, 'YLim');
 
 % TITLE
-title(in_title);
+title('Plot of AUC for training size between 1 to max training size');
 % LEGEND
 legend(in_legend, 'location', 'southeastoutside');
 % Y-AXIS LABEL
-ylabel(y_label);
+ylabel('AUC');
 % X-AXIS LABEL
-xlabel(x_label); % x-axis label
+xlabel('Training Size'); % x-axis label
 xlabh = get(gca,'XLabel');
 % to move x-axis label down
 set(xlabh,'Position',get(xlabh,'Position') - [0 .025 0])

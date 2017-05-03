@@ -1,4 +1,4 @@
-function [ ] = linearCCRPlot( x, x_label, y, y_label, in_legend, in_title )
+function [ ] = linearCCRPlot( x, y_s, in_legend)
 % logScalePlot
 % Plots
 %
@@ -21,20 +21,22 @@ function [ ] = linearCCRPlot( x, x_label, y, y_label, in_legend, in_title )
 figure
 hold on;
 grid on;
-[~, y_s] = size(y);
-for i = 1:y_s
-    y_i = y(:,i);
-    plot(x, y_i) % plot on linear scale
+strats = fieldnames(y_s);
+for i = 1:numel(strats)
+    y = y_s.(strats{i});
+    err = std(y);
+    y_i = mean(y,1);
+    errorbar(x, y_i,err) % plot on linear scale
 end
 
 % TITLE
-title(in_title);
+title('Plot of CCR for training size between 1 to max training size');
 % LEGEND
 legend(in_legend, 'location', 'southeastoutside');
 % Y-AXIS LABEL
-ylabel(y_label);
+ylabel('CCR');
 % X-AXIS LABEL
-xlabel(x_label); % x-axis label
+xlabel('Training Size'); % x-axis label
 
 
 hold off;

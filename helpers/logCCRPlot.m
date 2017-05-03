@@ -1,4 +1,4 @@
-function [ ] = logCCRPlot( x, x_label, y, y_label, in_legend, in_title )
+function [ ] = logCCRPlot( x, y_s, in_legend )
 % logScalePlot
 % Plots
 %
@@ -21,23 +21,26 @@ function [ ] = logCCRPlot( x, x_label, y, y_label, in_legend, in_title )
 figure
 hold on;
 grid on;
-[~, y_s] = size(y);
-for i = 1:y_s
-    y_i = y(:,i);
-    plot(log2(x), y_i) % plot on log2 x-scale
+
+strats = fieldnames(y_s);
+for i = 1:numel(strats)
+    y = y_s.(strats{i});
+    err = std(y);
+    y_i = mean(y,1);
+    errorbar(log2(x),y_i,err)
 end
 set(gca, 'XTickLabel',[]); % suppress current x-labels
 xt = get(gca, 'XTick');
 yl = get(gca, 'YLim');
 
 % TITLE
-title(in_title);
+title('Plot of CCR for training size between 1 to max training size');
 % LEGEND
 legend(in_legend, 'location', 'southeastoutside');
 % Y-AXIS LABEL
-ylabel(y_label);
+ylabel('CCR');
 % X-AXIS LABEL
-xlabel(x_label); % x-axis label
+xlabel('Training Size'); % x-axis label
 xlabh = get(gca,'XLabel');
 % to move x-axis label down
 set(xlabh,'Position',get(xlabh,'Position') - [0 .025 0])
