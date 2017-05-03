@@ -18,13 +18,10 @@ global TRAIN_X;
 random_fraction = 1 - num_to_select/length(TRAIN_X);
 sel_idx = RAND(sel_idx, floor(num_to_select * random_fraction));
 
-% Get only those rows from X and Y
-untrained_X = TRAIN_X(~sel_idx,:);
-% untrained_Y = Y(~sel_idx); % Should not be using untrained_Y
-
 % UNCERTAINTY SAMPLING
 sorted_indicies_1 = getSortedUS(sel_idx, classifier);
 % Match the global all_indicies to the trained_indicies to the 
+untrained_X = TRAIN_X(~sel_idx);
 [untrain_n, ~] = size(untrained_X);
 % [all_indicies, trained_indicies] 
 untrained_indicies = horzcat(find(~sel_idx), (1:untrain_n)');
