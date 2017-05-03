@@ -14,11 +14,12 @@ function [ sel_idx ] = mixedEnsembleVE(sel_idx, num_to_select)
 
 global TRAIN_X;
 
+% RANDOM SAMPLE
+random_fraction = 1 - num_to_select/length(TRAIN_X);
+sel_idx = RAND(sel_idx, floor(num_to_select * random_fraction));
+
 % Get only those rows from X and Y
 untrained_X = TRAIN_X(~sel_idx,:);
-% untrained_Y = Y(~sel_idx); % Should not be using untrained_Y
-
-orig_selected = sum(sel_idx);
 
 sorted_indicies = getSortedEnsembleVE( sel_idx );
 % Match the global all_indicies to the trained_indicies to the
@@ -37,7 +38,7 @@ for k = sorted_indicies'
         % select it
         sel_idx(global_idx) = 1;
         % if reached the target number to select, break early
-        if sum(sel_idx) == num_to_select - floor((num_to_select - orig_selected)/2)
+        if sum(sel_idx) == num_to_select
             break;
         end
     end

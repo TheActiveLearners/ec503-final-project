@@ -1,4 +1,4 @@
-function [ ] = linearAUCPlot( x, y_s, in_legend)
+function [fig] = linearAUCPlot( x, y_s, in_legend)
 % aucPlot
 % Plots
 %
@@ -19,7 +19,7 @@ function [ ] = linearAUCPlot( x, y_s, in_legend)
 %    N/A
 %------------- BEGIN CODE --------------
 
-figure
+fig = figure;
 hold on;
 grid on;
 

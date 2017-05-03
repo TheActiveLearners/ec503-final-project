@@ -1,4 +1,4 @@
-function [ sel_idx ] = pureDensity(sel_idx, num_to_select)
+function [ sel_idx ] = DWUS(sel_idx, num_to_select, classifier)
 % Uncertainty Sampling
 % Takes test data X and returns a single data point
 %
@@ -16,10 +16,9 @@ global TRAIN_X;
 
 % Get only those rows from X and Y
 untrained_X = TRAIN_X(~sel_idx,:);
-% untrained_Y = Y(~sel_idx); % Should not be using untrained_Y
 
-sorted_indicies = getSortedDensity(sel_idx);
 
+sorted_indicies = getSortedDensity(sel_idx, classifier);
 
 % Match the global all_indicies to the trained_indicies to the 
 [untrain_n, ~] = size(untrained_X);

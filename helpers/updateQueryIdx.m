@@ -25,10 +25,10 @@ if any(sel_idx) && num_select ~= train_n
             new_sel_idx = pureUS(sel_idx, num_select, classifier);
         case 'mixedUS'
             new_sel_idx = mixedUS(sel_idx, num_select, classifier);
-        case 'pureDensity'
-            new_sel_idx = pureDensity(sel_idx, num_select);
-        case 'mixedDensity'
-            new_sel_idx = mixedCluster(sel_idx, num_select);            
+        case 'DWUS'
+            new_sel_idx = DWUS(sel_idx, num_select, classifier);
+        case 'DW'
+            new_sel_idx = DW(sel_idx, num_select);          
         case 'pureEnsembleXOR'
             new_sel_idx = pureEnsembleXOR(sel_idx, num_select);
         case 'mixedEnsembleXOR'

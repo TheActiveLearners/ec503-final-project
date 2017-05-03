@@ -32,7 +32,7 @@ switch classifier
         % 1st column - positive class posterior probabilities
         cl_1_dist = dist_to_hyp(:,1);
         cl_1_uncertain = abs(0.5 - cl_1_dist);
-        [all_dist, trained_indicies] = sort(cl_1_uncertain, 'ascend');
+        [~, trained_indicies] = sort(cl_1_uncertain, 'ascend');
         
     case 'svm'
         % Uncertainty Sampling for KRR
@@ -52,9 +52,9 @@ switch classifier
         trained_X = repmat(trained_X,2,1);
         qda_mdl = fitcdiscr(trained_X, trained_Y, 'DiscrimType', 'pseudoQuadratic');
         % Get Posterior distribution for each untrained X
-        [~,dist_to_hyp] = predict(qda_mdl,untrained_X);
+        [label,post_dist, ml] = predict(qda_mdl,untrained_X);
         % 1st column - positive class posterior probabilities
-        cl_1_dist = dist_to_hyp(:,1);
+        cl_1_dist = ml(:,1);
         cl_1_uncertain = abs(0.5 - cl_1_dist);
         [all_dist, trained_indicies] = sort(cl_1_uncertain, 'ascend');        
         

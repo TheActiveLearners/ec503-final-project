@@ -1,4 +1,4 @@
-function [ ] = logAUCPlot( x, y_s, in_legend)
+function [fig] = logAUCPlot( x, y_s, in_legend)
 % aucPlot
 % Plots
 %
@@ -18,7 +18,7 @@ function [ ] = logAUCPlot( x, y_s, in_legend)
 % Outputs:
 %    N/A
 %------------- BEGIN CODE --------------
-figure
+fig = figure;
 hold on;
 grid on;
 

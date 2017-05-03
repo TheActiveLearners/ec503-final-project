@@ -46,21 +46,21 @@ scale = scales{select_scale}
 
 % QUERY STRATEGIES
 strategies = {...
-              'pureUS', 'mixedUS',....
-              'pureDensity', 'mixedDensity',...
+              'pureUS', 'mixedUS',...
               'pureEnsembleXOR','mixedEnsembleXOR',...
               'pureEnsembleVE','mixedEnsembleVE',...
+              'DWUS', 'DW',...
               'random'...
               };
 
 % Strategy Selection
 % select_strat = input('Which strategy (1) Vote (2) QBC (3) Uncertainty Sampling (4) Random ?  ');
 select_strat_1 = 9;
-select_strat_2 = 3;
+select_strat_2 = 8;
 strategy = {strategies{select_strat_1},strategies{select_strat_2}}
 
 % Select number of trials
-trials = 25;
+trials = 2;
 
 %% DATA PROCESSING
 % Format the data based on selections above
@@ -90,7 +90,7 @@ TEST_Y  = all_labels(test(cv,2),:);
 
 % via PAC learning model 1/E; E desired misclassification rate
 % E = .05; 1/.05 = 20 ~ 32
-seed = 32; % used for both linear and log
+seed = 2; % used for both linear and log
 increment = 4; % used for linear only
 max_sample = 100; % used for linear only
 
@@ -113,9 +113,16 @@ legend = {...
          };
 
 if strcmp(scale, 'log')
-    logCCRPlot(x, y, legend);
-    logAUCPlot(x, y, legend);
+    p1 = logCCRPlot(x, y, legend, dataset_name);
+%     p2 = logAUCPlot(x, y, legend);
 else
-    linearCCRPlot(x, y, legend);
-    linearAUCPlot(x, y, legend);   
+    p1 = linearCCRPlot(x, y, legend, dataset_name);
+%     p2 = linearAUCPlot(x, y, legend);   
 end
+
+
+savefig(p1, strcat(dataset_name, '_',strategy{1},'_',strategy{2}, '_',...
+     scale, '_CCR_', num2str(trials)))
+
+% savefig(p2, strcat(dataset_name, '_',strategy{1},'_',strategy{2}, '_',...
+%      scale, '_AUC_', num2str(trials)))
