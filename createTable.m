@@ -5,7 +5,7 @@
 dir_spam       = './results/spambase_data';
 dir_ibn       = './results/ibnsina_data';
 
-cur_dir = dir_ibn;
+cur_dir = dir_spam;
 
 files = dir(fullfile(cur_dir,'*.mat'));
 for k = 1:length(files)
@@ -14,13 +14,18 @@ for k = 1:length(files)
     results = data.results;
     m1 = mean(results.cl1_results_st1);
     m2 = mean(results.cl1_results_st2);
-    qda_avg_ccr_diff = mean(m2 - m1)
-    train_points = length(m1);
+    combo = vertcat(m1,m2);
+    qda_avg_ccr_diff = mean(m2 - m1);
     
-    m1_interp = interp(m1,4);
-    m2_interp = interp(m2,4)
-    [a,b] = sort(m1_interp, 'ascend')
-    [c,d] = sort(m2_interp, 'ascend')
+    combo_sort = vertcat(a,c);
+    difference_index = zeros(size(m1));
+    for curr_ccr = m1_sort
+        i = find(curr_ccr == m1);
+        j = min(find(curr_ccr >= m2));
+        difference_index(i) = j-i;
+    end
+    
+    differnce_index;
     
     
     
