@@ -27,8 +27,7 @@ for i = 1:numel(strats)
     y = y_s.(strats{i});
     err = std(y);
     y_i = mean(y,1);
-    h = errorbar(log2(x),y_i,err);
-    set(get(h,'Children'),{'LineWidth'},{2; 1});
+    errorbar(log2(x),y_i,err);
 end
 set(gca, 'XTickLabel',[]); % suppress current x-labels
 xt = get(gca, 'XTick');

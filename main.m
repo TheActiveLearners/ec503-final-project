@@ -56,11 +56,11 @@ strategies = {...
 % Strategy Selection
 % select_strat = input('Which strategy (1) Vote (2) QBC (3) Uncertainty Sampling (4) Random ?  ');
 select_strat_1 = 9;
-select_strat_2 = 8;
+select_strat_2 = 7;
 strategy = {strategies{select_strat_1},strategies{select_strat_2}}
 
 % Select number of trials
-trials = 2;
+trials = 25;
 
 %% DATA PROCESSING
 % Format the data based on selections above
@@ -90,7 +90,7 @@ TEST_Y  = all_labels(test(cv,2),:);
 
 % via PAC learning model 1/E; E desired misclassification rate
 % E = .05; 1/.05 = 20 ~ 32
-seed = 2; % used for both linear and log
+seed = 32; % used for both linear and log
 increment = 4; % used for linear only
 max_sample = 100; % used for linear only
 

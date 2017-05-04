@@ -18,7 +18,7 @@ global TRAIN_X;
 untrained_X = TRAIN_X(~sel_idx,:);
 
 
-sorted_indicies = getSortedDensity(sel_idx, classifier);
+sorted_indicies = getSortedDensityUS(sel_idx, classifier);
 
 % Match the global all_indicies to the trained_indicies to the 
 [untrain_n, ~] = size(untrained_X);

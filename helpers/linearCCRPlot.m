@@ -26,6 +26,7 @@ for i = 1:numel(strats)
     y = y_s.(strats{i});
     err = std(y);
     y_i = mean(y,1);
+    errorbar(x,y_i,err);
 end
 
 % TITLE
