@@ -26,7 +26,7 @@ switch classifier
     case 'nb'
         % Uncertainty Sampling for Naive Bayes
         % Train a NB on only trained data
-        nb_mdl = fitcnb(trained_X, trained_Y,'Distribution','RBF');
+        nb_mdl = fitcnb(trained_X, trained_Y,'Distribution','kernel');
         % Get Posterior distribution for each untrained X
         [~,dist_to_hyp,~] = predict(nb_mdl,untrained_X);
         % 1st column - positive class posterior probabilities
@@ -37,7 +37,7 @@ switch classifier
     case 'svm'
         % Uncertainty Sampling for KRR
         % Train a NB on only trained data
-        svm_mdl = fitcsvm(trained_X,trained_Y,'Standardize',true,'KernelFunction','rbf',...
+        svm_mdl = fitcsvm(trained_X,trained_Y,'Standardize',true,'KernelFunction','RBF',...
                         'KernelScale','auto');
         % Get Posterior distribution for each untrained X
         [~,dist_to_hyp] = predict(svm_mdl,untrained_X);
