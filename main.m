@@ -30,7 +30,7 @@ datasets = {
 % MAKE SELECTION HERE
 % Model Selection
 % select_mdl = input('Which dataset (1) ALEX (2) IBN_SINA ?  ');
-select_dataset = 3;
+select_dataset = 2;
 dataset_name = datasets{select_dataset}{1}
 dataset_data  = datasets{select_dataset}{2};
 dataset_label  = datasets{select_dataset}{3};

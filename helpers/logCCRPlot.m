@@ -25,7 +25,7 @@ grid on;
 strats = fieldnames(y_s);
 for i = 1:numel(strats)
     y = y_s.(strats{i});
-    err = std(y);
+    err = std(y)./5;
     y_i = mean(y,1);
     errorbar(log2(x),y_i,err);
 end
@@ -34,7 +34,7 @@ xt = get(gca, 'XTick');
 yl = get(gca, 'YLim');
 
 % TITLE
-title(strcat('CCR as a function of training size for ', dataset));
+title(['CCR as a function of training size for ', dataset]);
 % LEGEND
 legend(in_legend, 'location', 'southeastoutside');
 % Y-AXIS LABEL

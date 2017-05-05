@@ -24,7 +24,7 @@ grid on;
 strats = fieldnames(y_s);
 for i = 1:numel(strats)
     y = y_s.(strats{i});
-    err = std(y);
+    err = std(y)./5;
     y_i = mean(y,1);
     errorbar(x,y_i,err);
 end
