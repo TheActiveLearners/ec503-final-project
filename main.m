@@ -56,11 +56,11 @@ strategies = {...
 % Strategy Selection
 % select_strat = input('Which strategy (1) Vote (2) QBC (3) Uncertainty Sampling (4) Random ?  ');
 select_strat_1 = 9;
-select_strat_2 = 7;
+select_strat_2 = 2;
 strategy = {strategies{select_strat_1},strategies{select_strat_2}}
 
 % Select number of trials
-trials = 2;
+trials = 5;
 
 %% DATA PROCESSING
 % Format the data based on selections above
