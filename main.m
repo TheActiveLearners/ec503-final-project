@@ -60,7 +60,7 @@ select_strat_2 = 7;
 strategy = {strategies{select_strat_1},strategies{select_strat_2}}
 
 % Select number of trials
-trials = 25;
+trials = 2;
 
 %% DATA PROCESSING
 % Format the data based on selections above
