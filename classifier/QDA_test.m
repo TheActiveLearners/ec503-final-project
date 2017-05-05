@@ -1,12 +1,10 @@
 function [ ccr ] = QDA_test( mdl )
-% Decision Tree Test
+% QDA Test
 % Takes test data X and corresponding labels Y and returns a CCR
 %
-% Syntax:  [ ccr ] = DT_test( mdl, X, Y )
+% Syntax:  [ ccr ] = QDA_test( mdl)
 % Inputs:
-%    mdl - Decision Tree Model: struct
-%    X - X data: num_samples by num_features
-%    Y - Y labels: num_samples by 1
+%    mdl - QDA Model: struct
 %
 % Outputs:
 %    ccr - Correct Classification Rate: scalar

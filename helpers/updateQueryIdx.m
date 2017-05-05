@@ -5,19 +5,19 @@ function [ new_sel_idx ] = updateQueryIdx( strategy, classifier, sel_idx, num_se
 % Syntax:  [ new_x ] = getNewX( s )
 % Inputs:
 %    strategy - query strategy: string
-%    sel_idx - logical array of selected indicies: num_sample x 1
-%    num_select - number of data points to train on X: scalar
-%    X - X data: num_samples by num_features
-%    Y - Y labels: num_samples by 1
+%    classifier - base classifier ultimately used for testing: string
+%    sel_idx - logic vector of which indicies currently selected: vector
+%    num_select - number of elements to select at this iteration
 %
 % Outputs:
-%    new_x - data point index: scalar
+%    new_sel_idx - new logic vector of selected indicies: vector
 %------------- BEGIN CODE --------------
 
 global TRAIN_X;
 
 [train_n, ~] = size(TRAIN_X);
 % verify that at least one sample given in training
+% last batch selected randomly ex. 2,4...2048,2300 from 2048->2300 is random
 if any(sel_idx) && num_select ~= train_n
     % call query strategy
     switch strategy

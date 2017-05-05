@@ -1,11 +1,11 @@
-%% Create final Table of Results
-
+%% Create Table of Results
+addpath('./helpers/')
 dir_spam       = './results/spambase_data';
 dir_ibn       = './results/ibnsina_data';
 
-cur_dir = dir_ibn;
-% lastp = 2300;
-lastp = 10361;
+cur_dir = dir_spam;
+lastp = 2300;
+% lastp = 10361;
 
 files = dir(fullfile(cur_dir,'*.mat'));
 for k = 1:length(files)

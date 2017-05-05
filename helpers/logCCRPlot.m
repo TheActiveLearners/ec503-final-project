@@ -1,22 +1,19 @@
-function [fig] = logCCRPlot( x, y_s, in_legend, dataset )
+function [fig] = logCCRPlot( x, y_s, in_legend, dataset, trials )
 % logScalePlot
-% Plots
+% Plots CCR on a log scale
 %
-% Syntax:  [  ] = logScalePlot(...
-%              x,'Training Size',...
-%              y,'CCR',...
-%              legend,...
-%              'Plot of CCR for training size between 2^{-5} to 2^{15}');
+% Syntax:  [ fig ] = linearScalePlot(...
+%                                    x, y_s,...
+%                                    in_legend,trial);
 % Inputs:
-%    x - log scale vector of x values: |X| x 1
-%    x_label - x axis label: string
-%    y - y values to corresponding x values: |X| x |Y| ex. 14 x 2 -> 2 samples 
-%    y_label - x axis label: string
+%    x - scale for which vector of x values: |X| x 1
+%    y_s - struct containting 
 %    in_legend - cell array of strings
-%    in_title - string
+%    dataset - string
+%    trials - number of trials
 %
 % Outputs:
-%    N/A
+%    fig - the figure of the plot
 %------------- BEGIN CODE --------------
 fig = figure;
 hold on;
@@ -25,7 +22,7 @@ grid on;
 strats = fieldnames(y_s);
 for i = 1:numel(strats)
     y = y_s.(strats{i});
-    err = std(y)./5;
+    err = std(y)./sqrt(trials);
     y_i = mean(y,1);
     errorbar(log2(x),y_i,err);
 end

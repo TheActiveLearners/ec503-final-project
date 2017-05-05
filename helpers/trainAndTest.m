@@ -1,22 +1,19 @@
 function [ final_results ] = trainAndTest(st1, st2, sample_steps, trials)
 % trainAndTest
-% Runs train and test depending on the strategy
+% Runs train and test depending on the strategies
 %
-% Syntax:  [ dt_results, krr_results ] = trainAndTest(strategy, num_samples,...
-%                                                     train_X, train_Y,...
-%                                                     test_X, test_Y)
+% Syntax:  [ final_results ] = trainAndTest(strategy, num_samples,...
+%                                           train_X, train_Y,...
+%                                           test_X, test_Y)
 % Inputs:
-%    strategy - query strategy: string
-%    num_samples - X data: num_samples by num_features
-%    train_X - X data for the training set: train_n x train_m
-%    train_Y - Y labels for the training set: train_n by 1
-%    test_X - X data for the test set: test_n x test_m
-%    test_Y - Y labels for the test set: test_n by 1
+%    st1 - first query strategy: string
+%    st1 - second query strategy: string
+%    sample_steps - training size increments: vector
+%    trials - number of trials: number
 %
 % Outputs:
-%    dt_result - CCR for each num training samples: tmax x num_samples
-%    krr_result - CCR for each num training samples: tmax x num_samples
-%    kmeans_results - CCR for each num training samples: tmax x num_samples
+%    final_results - struct containing the CCR at each each training size
+%    for each classifier and strategy for a total of 4 properties: struct
 
 %------------- BEGIN CODE --------------
 
@@ -34,9 +31,9 @@ final_results.cl2_results_st2 = zeros(trials, length(sample_steps));
 
 % For each trial
 for t = 1:trials
-    t
+    t % print out the current trial
     % Reset all the selected indicies to false
-    % cl1 == 'dt'     
+    % cl1 == 'qda'     
     cl1_sel_idx_st1 = false(train_n,1);
     cl2_sel_idx_st1 = false(train_n,1);
     

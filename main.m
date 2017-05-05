@@ -113,16 +113,11 @@ legend = {...
          };
 
 if strcmp(scale, 'log')
-    p1 = logCCRPlot(x, y, legend, dataset_name);
-%     p2 = logAUCPlot(x, y, legend);
+    p1 = logCCRPlot(x, y, legend, dataset_name, trials);
 else
-    p1 = linearCCRPlot(x, y, legend, dataset_name);
-%     p2 = linearAUCPlot(x, y, legend);   
+    p1 = linearCCRPlot(x, y, legend, dataset_name, trials);
 end
 
 
 savefig(p1, strcat(dataset_name, '_',strategy{1},'_',strategy{2}, '_',...
      scale, '_CCR_', num2str(trials)))
-
-% savefig(p2, strcat(dataset_name, '_',strategy{1},'_',strategy{2}, '_',...
-%      scale, '_AUC_', num2str(trials)))
